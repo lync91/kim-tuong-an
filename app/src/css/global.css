@@ -1,0 +1,120 @@
+.p-5 {
+    padding: 5px;
+}
+
+.m-t-10 {
+    margin-bottom: 10px;
+}
+
+.m-t-5 {
+    margin-bottom: 5px;
+}
+
+.ant-form-item {
+    margin-bottom: 5px !important;
+}
+
+.ant-layout-sider {
+    position: absolute !important;
+    background-color: rgb(216, 216, 216) !important;
+    height: 100%;
+}
+
+.ant-layout-content {
+    margin-left: 200px;
+}
+
+#components-layout-demo-custom-trigger .trigger {
+    padding: 0 24px;
+    font-size: 18px;
+    line-height: 64px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+#components-layout-demo-custom-trigger .trigger:hover {
+    color: #1890ff;
+}
+
+#components-layout-demo-custom-trigger .logo {
+    height: 32px;
+    margin: 16px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.site-layout .site-layout-background {
+    background: #fff;
+}
+
+.num-pad {
+    padding: 16px 40px;
+}
+
+.num-pad button {
+    margin: 3px;
+    width: 70px;
+    height: 50px;
+    font-size: 14pt;
+    font-weight: bold;
+}
+.panel1 {
+    width: 460px;
+}
+.panel2 {
+    font-family: 'Times New Roman', Times, serif;
+    padding: 10px;
+    width: calc(100% - 520px);
+}
+.tag-gia {
+    height: 24px !important;
+    font-size: 12pt !important;
+}
+.phieu-tam {
+    background-color: #fff;
+    padding: 15px;
+}
+.phieu-cuong {
+    background-color: #fff;
+    padding: 15px;
+}
+.phieu-header-row {
+    font-weight: bold;
+    text-align: center;
+}
+.center {
+    margin: auto;
+    text-align: center;
+  }
+.phieu-logo {
+    font-size: 24pt;
+    color: red;
+}
+.phieu-title {
+    font-size: 20pt;
+    color: red;
+    font-weight: bold;
+}
+.qr-code {
+    padding: 10px;
+    position: absolute;
+    top: 100px;
+    right: 0;
+    font-size: 18px;
+}
+.phieu-content {
+    font-size: 14pt;
+}
+.phieu-time {
+    position:absolute;
+    top: auto;
+    right: 20px;
+}
+.ant-table-cell {
+    padding: 5px 8px !important;
+}
+.input-focused {
+    border-color: #008cff;
+    border-right-width: 1px !important;
+    outline: 1;
+    box-shadow: 0 0 0 2px rgba(0, 132, 255, 0.404);
+}
