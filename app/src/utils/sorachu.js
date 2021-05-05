@@ -37,7 +37,7 @@ function docblock(_so, daydu) {
     return chuoi;
 }
 function dochangtrieu(_so, _daydu) {
-    let daydu = _daydu
+    let daydu = _daydu;
     let so = _so;
     let chuoi = '';
     const trieu = Math.floor(so / 1000000);
@@ -58,7 +58,7 @@ function dochangtrieu(_so, _daydu) {
     return chuoi;
 }
 export default function docso(_so) {
-    let so = _so
+    let so = _so;
     if (so === 0) return mangso[0];
     let chuoi = '';
     let hauto = '';

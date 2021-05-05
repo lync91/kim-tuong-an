@@ -6,16 +6,10 @@ import BangThongKe from '../components/bangThongKe';
 const { ipcRenderer } = window.require('electron');
 
 function ThongKe() {
-    const [count, setCount] = useState(0);
     const [table, updateTable] = useState([]);
     useEffect(() => {
-        console.log('mounted');
         ipcRenderer.send('getData', '');
     }, []);
-    ipcRenderer.on('tableResult', (e, ar) => {
-        console.log(ar);
-        updateTable(ar);
-    });
     return (
         <div>
             <PageHeader className="site-page-header"
@@ -35,7 +29,7 @@ function ThongKe() {
                 }
             />
             <Layout>
-                <BangThongKe data={table}/>
+                <BangThongKe data={table} onUpda/>
             </Layout>
         </div>
     );

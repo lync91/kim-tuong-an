@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ipcRenderer } from 'electron';
+import { remote } from 'electron';
 import {
     PageHeader,
     Layout,
@@ -21,7 +21,7 @@ import moment from 'moment';
 import { crc16 } from 'js-crc';
 import { generate } from 'generate-serial-number';
 
-import { remote } from 'electron';
+const db = remote.require('./db');
 // const { PosPrinter } = remote.require('electron-pos-printer');
 
 import Button from 'antd-button-color';
@@ -33,23 +33,27 @@ import GiaVang from '../components/giaVang';
 
 const dateFormat = 'DD/MM/YYYY';
 
+const genkey = (key) => {
+    return `${crc16('1999009090909')}${generate(4)}`;
+};
+
 const defData = {
-    key: '',
-    tenkhach: '',
+    key: genkey(),
+    tenkhach: 'Mã Đại Phúc',
     dienthoai: '',
-    monhang: '',
+    monhang: '1N 2V',
     loaivang: '18K',
-    tongtrongluong: '',
+    tongtrongluong: '1',
     trongluonghot: '',
     trongluongthuc: '',
     tiencam: '',
-    ngaychuoc: moment().add(10, 'days').format(dateFormat),
+    ngaychuoc: moment().add(30, 'days').format(dateFormat),
     ngaycam: moment().format(dateFormat),
     gia18K: 2900000,
     gia24K: 4900000,
     gia9999: 4900000,
     giatinh: 0
-}
+};
 
 function TaoPhieu() {
     const [form] = Form.useForm();
@@ -57,39 +61,40 @@ function TaoPhieu() {
     const [formData, setFormData] = useState(defData);
     const [currentInput, setCurrentInput] = useState('tenkhach');
     const [visible, setVisible] = useState(false);
-    useEffect(() => {
-        const key = `${crc16('1999009090909')}${generate(4)}`;
-        setFormData({ ...defData, ...{ key: key } });
-        form.setFieldsValue({ ...defData, ...{ key: key, giatinh: defData.gia18K} });
-        setFormData({...defData, ...form.getFieldsValue()})
-    }, [])
-    const [componentSize, setComponentSize] = useState('default');
-    const printPhieu = () => {
-        const { BrowserWindow, dialog, shell } = remote;
-        const printWindow = new BrowserWindow({ 'auto-hide-menu-bar': true, show: false });
-        const list = printWindow.webContents.getPrinters();
-        console.log('All printer available are ', list);
-    };
+
     const calc = () => {
         const tongtrongluong = Number(form.getFieldValue('tongtrongluong'));
         const trongluonghot = Number(form.getFieldValue('trongluonghot'));
         const trongluongthuc = tongtrongluong - trongluonghot;
-        console.log(form.getFieldValue('giatinh'));
         const tiencam = Math.round(trongluongthuc * Number(form.getFieldValue('giatinh')));
-        form.setFieldsValue({ trongluongthuc: trongluongthuc, tiencam: tiencam })
-        setFormData(form.getFieldsValue())
-    }
+        form.setFieldsValue({ trongluongthuc: trongluongthuc, tiencam: tiencam });
+        setFormData({...formData, ...form.getFieldsValue()});
+    };
+
+    useEffect(() => {
+        const key = `${crc16('1999009090909')}${generate(4)}`;
+        // setFormData({ ...defData, ...{ key: key } });
+        form.setFieldsValue({ ...defData, ...{ key: key, giatinh: defData.gia18K} });
+        calc();
+    }, []);
+    const [componentSize, setComponentSize] = useState('default');
+    const printPhieu = () => {
+        // const { BrowserWindow, dialog, shell } = remote;
+        // const printWindow = new BrowserWindow({ 'auto-hide-menu-bar': true, show: false });
+        // const list = printWindow.webContents.getPrinters();
+        // // console.log('All printer available are ', list);
+    };
     const _onValuesChange = (value, vs) => {
         setFormData(vs);
         calc();
-    }
+    };
     const btnClick = (key, addspace) => {
         const tmp = {};
         tmp[currentInput] = `${form.getFieldValue(currentInput)}${key}${addspace ? ' ' : ''}`;
         form.setFieldsValue(tmp);
-        setFormData(form.getFieldsValue())
+        setFormData({...formData, ...form.getFieldsValue()});
         calc();
-    }
+    };
     const showDrawer = () => {
         setVisible(true);
     };
@@ -99,21 +104,27 @@ function TaoPhieu() {
     };
     const onGiaUpdate = (data) => {
         form.setFieldsValue(data);
-        setFormData(form.getFieldsValue())
-    }
+        calc();
+    };
     const _selectGia = (e) => {
         switch (e) {
             default:
             case '18K':
+                onGiaUpdate({giatinh: form.getFieldValue('gia18K')});
                 return;
             case '24K':
+                onGiaUpdate({giatinh: form.getFieldValue('gia24K')});
                 return;
             case '9999':
+                onGiaUpdate({giatinh: form.getFieldValue('gia9999')});
         }
-    }
+    };
     const save = () => {
-        ipcRenderer.send('addPhieuCam', form.getFieldsError());
-    }
+        db.initdb.dropCamDo();
+        db.initdb.createCamDo();
+        // ipcRenderer.send('addPhieuCam', form.getFieldsValue());
+        // db.insertPhieuCam(form.getFieldsValue());
+    };
     return (
         <div >
             <PageHeader className="site-page-header"

@@ -1,10 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import { Table, Tag, Space } from 'antd';
+import React from 'react';
+import { Table, Space } from 'antd';
 const { Column, ColumnGroup } = Table;
 
 function BangThongKe(props) {
     const {data} = props;
-    console.log(data);
     return (
         <div>
             <Table className="bang-thong-ke" dataSource={data}>
@@ -48,7 +47,7 @@ function BangThongKe(props) {
                 />
             </Table>
         </div>
-    )
+    );
 }
 
 export default BangThongKe;
