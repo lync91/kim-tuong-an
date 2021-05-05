@@ -12,8 +12,22 @@ const initdb = {
         knex.schema
             .createTable('camdo', (table) => {
                 table.increments('id');
-                table.string('first_name', 255);
-                table.string('last_name', 255);
+                table.string('sophieu');
+                table.string('tenkhach');
+                table.string('dienthoai');
+                table.string('monhang');
+                table.string('loaivang');
+                table.float('tongtrongluong');
+                table.float('trongluonghot');
+                table.float('trongluongthuc');
+                table.integer('gianhap');
+                table.integer('tiencam');
+                table.integer('laisuat');
+                table.integer('tienlai');
+                table.integer('tienchuoc');
+                table.datetime('ngaycam');
+                table.datetime('ngaychuoc');
+                table.timestamps();
             }).then((rows) => {
                 console.log(rows);
             });

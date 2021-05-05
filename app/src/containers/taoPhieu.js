@@ -120,10 +120,10 @@ function TaoPhieu() {
         }
     };
     const save = () => {
-        db.initdb.dropCamDo();
-        db.initdb.createCamDo();
+        // db.initdb.dropCamDo();
+        // db.initdb.createCamDo();
         // ipcRenderer.send('addPhieuCam', form.getFieldsValue());
-        // db.insertPhieuCam(form.getFieldsValue());
+        db.insertPhieuCam(form.getFieldsValue());
     };
     return (
         <div >
