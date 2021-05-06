@@ -1,115 +1,87 @@
 {
-  "name": "electron-starter-kit",
-  "productName": "electron-starter-kit",
-  "version": "1.0.0",
-  "description": "Electron starter kit with React, Redux, Webpack 4, Autoupdater and much more...",
-  "repository": "https://github.com/trembacz/electron-starter-kit.git",
+  "name": "electron-react-webpack-boilerplate",
+  "version": "1.15.0",
+  "description": "Minimal Electron, React, PostCSS and Webpack boilerplate to help you get started with building your next app.",
+  "license": "MIT",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexdevero/electron-react-webpack-boilerplate.git"
+  },
+  "homepage": "",
+  "bugs": {
+    "url": "https://github.com/alexdevero/electron-react-webpack-boilerplate/issues"
+  },
+  "author": {
+    "name": "Alex Devero",
+    "email": "deveroalex@gmail.com",
+    "url": "https://github.com/alexdevero"
+  },
+  "keywords": [
+    "app",
+    "boilerplate",
+    "electron",
+    "open",
+    "open-source",
+    "postcss",
+    "react",
+    "reactjs",
+    "source",
+    "webpack"
+  ],
+  "engines": {
+    "node": ">=9.0.0",
+    "npm": ">=5.0.0",
+    "yarn": ">=1.0.0"
+  },
+  "browserslist": [
+    "last 4 versions"
+  ],
   "main": "main.js",
   "scripts": {
-    "build": "webpack --colors --hide-modules --config=./webpack.prod.config.js",
-    "bundle": "webpack --colors --hide-modules --config=./webpack.dev.config.js",
-    "serve": "electron .",
-    "start": "(SET NODE_ENV=development) && npm-run-all --parallel bundle serve",
-    "prod": "(SET NODE_ENV=production) && npm-run-all --parallel build serve",
-    "package-all": "electron-builder -wml --ia32 --x64",
-    "package-win": "electron-builder --win --ia32 --x64",
-    "package-mac": "electron-builder --mac",
-    "package-linux": "electron-builder --linux",
-    "publish-app": "electron-builder -wml --ia32 --x64 -p always",
-    "postinstall": "electron-builder install-app-deps",
-    "rebuild": "electron-rebuild -f -w sqlite3"
-  },
-  "author": "Tomasz Rembacz <mm@mm85.org>",
-  "license": "MIT",
-  "build": {
-    "appId": "com.starter.kit",
-    "win": {
-      "compression": "maximum",
-      "target": "nsis-web",
-      "icon": "assets/icons/icon.ico"
-    },
-    "mac": {
-      "category": "public.app-category.productivity"
-    },
-    "linux": {
-      "category": "Productivity",
-      "target": [
-        "AppImage"
-      ]
-    },
-    "nsisWeb": {
-      "allowToChangeInstallationDirectory": true,
-      "oneClick": false,
-      "createDesktopShortcut": true
-    },
-    "directories": {
-      "buildResources": "assets/icons",
-      "output": "dist"
-    },
-    "files": [
-      "**/*",
-      "!dist/*",
-      "!node_modules/*"
-    ],
-    "extraResources": [
-      {
-        "from": "./data/",
-        "to": "data",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ]
-  },
-  "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-proposal-decorators": "^7.10.5",
-    "@babel/preset-env": "^7.11.5",
-    "@babel/preset-react": "^7.10.4",
-    "babel-eslint": "^10.1.0",
-    "babel-loader": "^8.1.0",
-    "css-loader": "^4.3.0",
-    "electron": "^10.1.3",
-    "electron-builder": "22.8.1",
-    "electron-devtools-installer": "^3.1.1",
-    "electron-rebuild": "^2.3.5",
-    "electron-reload": "^1.5.0",
-    "eslint": "^7.10.0",
-    "eslint-loader": "^4.0.2",
-    "eslint-plugin-react": "^7.21.2",
-    "file-loader": "^6.1.0",
-    "html-webpack-plugin": "^4.5.0",
-    "mini-css-extract-plugin": "^0.11.3",
-    "npm-run-all": "^4.1.5",
-    "optimize-css-assets-webpack-plugin": "^5.0.4",
-    "url-loader": "^4.1.0",
-    "webpack": "^4.44.2",
-    "webpack-bundle-analyzer": "^3.9.0",
-    "webpack-cli": "^3.3.12"
+    "prod": "cross-env NODE_ENV=production webpack --mode production --config webpack.build.config.js && electron --noDevServer .",
+    "start": "cross-env NODE_ENV=development webpack serve --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
+    "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
+    "package": "npm run build",
+    "postpackage": "electron-packager ./ --out=./builds"
   },
   "dependencies": {
-    "@ant-design/icons": "4.0.0",
+    "@ant-design/icons": "^4.6.2",
     "@electron/remote": "^1.1.0",
-    "adler-32": "^1.3.0",
-    "antd": "^4.15.3",
+    "antd": "^4.15.4",
     "antd-button-color": "^1.0.4",
-    "core-js": "^3.6.5",
-    "crypto-js": "^4.0.0",
-    "eiphop": "^1.0.13",
-    "electron-pos-printer": "^1.2.4",
-    "electron-updater": "^4.3.5",
     "generate-serial-number": "^0.0.3",
     "js-crc": "^0.2.0",
     "knex": "^0.95.4",
     "moment": "^2.29.1",
-    "prop-types": "^15.7.2",
-    "react": "^16.13.1",
+    "postcss": "^8.2.8",
+    "react": "^17.0.1",
     "react-barcode": "^1.4.0",
-    "react-dom": "^16.13.1",
-    "react-redux": "^7.2.1",
+    "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
-    "redux": "^4.0.5",
     "sqlite3": "^5.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.10",
+    "@babel/preset-react": "^7.12.13",
+    "babel-loader": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "css-loader": "^5.1.1",
+    "electron": "^12.0.0",
+    "electron-devtools-installer": "^3.1.1",
+    "electron-packager": "^15.2.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.1",
+    "mini-css-extract-plugin": "^1.3.9",
+    "postcss-import": "^14.0.0",
+    "postcss-loader": "^5.1.0",
+    "postcss-nested": "^5.0.5",
+    "postcss-preset-env": "^6.7.0",
+    "postcss-pxtorem": "^5.1.1",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.24.4",
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2"
   }
 }

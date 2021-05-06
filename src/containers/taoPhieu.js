@@ -6,15 +6,12 @@ import {
     Input,
     Radio,
     Select,
-    // Cascader,
     DatePicker,
-    // InputNumber,
-    // TreeSelect,
-    // Switch,
     Row,
     Col,
     Tag,
-    Drawer
+    Drawer,
+    message
 } from 'antd';
 import moment from 'moment';
 import { crc16 } from 'js-crc';
@@ -127,7 +124,7 @@ function TaoPhieu() {
     };
     const save = () => {
         insertCamdo(form.getFieldsValue(), (res) => {
-            console.log(res);
+            message.success('Thêm thành công phiếu cầm đồ')
         });
     };
     return (

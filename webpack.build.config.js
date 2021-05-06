@@ -1,7 +1,7 @@
 const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const { spawn } = require('child_process')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 // Any directories you will be adding code/files into, need to be added to this array so webpack will pick them up
 const defaultInclude = path.resolve(__dirname, 'src')
@@ -11,7 +11,11 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: [{ loader: 'style-loader' }, { loader: 'css-loader' }, { loader: 'postcss-loader' }],
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader'
+        ],
         include: defaultInclude
       },
       {
@@ -34,26 +38,24 @@ module.exports = {
   target: 'electron-renderer',
   plugins: [
     new HtmlWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: 'bundle.css',
+      chunkFilename: '[id].css'
+    }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('development')
-    })
+      'process.env.NODE_ENV': JSON.stringify('production')
+    }),
+    // new MinifyPlugin()
   ],
-  devtool: 'cheap-source-map',
-  devServer: {
-    contentBase: path.resolve(__dirname, 'dist'),
-    stats: {
-      colors: true,
-      chunks: false,
-      children: false
-    },
-    before() {
-      spawn(
-        'electron',
-        ['.'],
-        { shell: true, env: process.env, stdio: 'inherit' }
-      )
-      .on('close', code => process.exit(0))
-      .on('error', spawnError => console.error(spawnError))
-    }
+  stats: {
+    colors: true,
+    children: false,
+    chunks: false,
+    modules: false
+  },
+  optimization: {
+    minimize: true
   }
 }
