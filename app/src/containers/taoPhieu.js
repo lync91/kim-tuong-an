@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { remote } from 'electron';
 import {
     PageHeader,
     Layout,
@@ -21,7 +20,10 @@ import moment from 'moment';
 import { crc16 } from 'js-crc';
 import { generate } from 'generate-serial-number';
 
-const db = remote.require('./db');
+import {
+    getLastId,
+    insertCamdo
+} from '../utils/db';
 // const { PosPrinter } = remote.require('electron-pos-printer');
 
 import Button from 'antd-button-color';
@@ -33,12 +35,12 @@ import GiaVang from '../components/giaVang';
 
 const dateFormat = 'DD/MM/YYYY';
 
-const genkey = (key) => {
-    return `${crc16('1999009090909')}${generate(4)}`;
-};
+// const genkey = (key) => {
+//     return `${crc16('1999009090909')}${generate(4)}`;
+// };
 
 const defData = {
-    key: genkey(),
+    sophieu: '123456789',
     tenkhach: 'Mã Đại Phúc',
     dienthoai: '',
     monhang: '1N 2V',
@@ -70,14 +72,18 @@ function TaoPhieu() {
         form.setFieldsValue({ trongluongthuc: trongluongthuc, tiencam: tiencam });
         setFormData({...formData, ...form.getFieldsValue()});
     };
-
+    const genKey = () => {
+        getLastId((res) => {
+            const key = `${crc16(`${res}${generate(4)}`)}${generate(4)}`;
+            form.setFieldsValue({ ...defData, ...{ sophieu: key, giatinh: defData.gia18K} });
+            // setFormData({ ...defData, ...{ sophieu: key, giatinh: defData.gia18K} });
+        });
+    };
     useEffect(() => {
-        const key = `${crc16('1999009090909')}${generate(4)}`;
+        genKey();
         // setFormData({ ...defData, ...{ key: key } });
-        form.setFieldsValue({ ...defData, ...{ key: key, giatinh: defData.gia18K} });
-        calc();
+        // calc();
     }, []);
-    const [componentSize, setComponentSize] = useState('default');
     const printPhieu = () => {
         // const { BrowserWindow, dialog, shell } = remote;
         // const printWindow = new BrowserWindow({ 'auto-hide-menu-bar': true, show: false });
@@ -120,10 +126,9 @@ function TaoPhieu() {
         }
     };
     const save = () => {
-        // db.initdb.dropCamDo();
-        // db.initdb.createCamDo();
-        // ipcRenderer.send('addPhieuCam', form.getFieldsValue());
-        db.insertPhieuCam(form.getFieldsValue());
+        insertCamdo(form.getFieldsValue(), (res) => {
+            console.log(res);
+        });
     };
     return (
         <div >
@@ -169,8 +174,7 @@ function TaoPhieu() {
                                 }
                             }
                             layout="horizontal"
-                            onValuesChange={(v, vs) => _onValuesChange(v, vs)}
-                            size={componentSize} >
+                            onValuesChange={(v, vs) => _onValuesChange(v, vs)} >
                             <Form.Item hidden label="Form Size"
                                 name="size" >
                                 <Radio.Group >
@@ -178,7 +182,7 @@ function TaoPhieu() {
                                     <Radio.Button value="default" > Default </Radio.Button>
                                     <Radio.Button value="large" > Large </Radio.Button>
                                 </Radio.Group> </Form.Item>
-                            <Form.Item label="Mã số phiếu" name="key" >
+                            <Form.Item label="Mã số phiếu" name="sophieu" >
                                 <Input disabled />
                             </Form.Item>
                             <Form.Item onClick={() => setCurrentInput('tenkhach')} label="Tên khách hàng" name="tenkhach" >

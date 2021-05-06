@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { HashRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 // import { remote } from 'electron';
 
 import {
@@ -28,8 +26,6 @@ const { Header, Footer, Sider, Content } = Layout;
 
 class Main extends Component {
     static propTypes = {
-        dispatch: PropTypes.func,
-        settings: PropTypes.object
     };
     constructor() {
         super();
@@ -90,5 +86,4 @@ class Main extends Component {
     }
 }
 
-const mapStateToProps = (state) => { return { ...state }; };
-export default connect(mapStateToProps)(Main);
+export default Main;

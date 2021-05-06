@@ -1,6 +1,6 @@
 import React from 'react';
 import Barcode from 'react-barcode';
-import { Col, Row } from 'antd';
+import { Col, Row, Skeleton } from 'antd';
 
 import docso from '../utils/sorachu';
 
@@ -8,14 +8,14 @@ function Phieu(props) {
     const { formData } = props;
     return (
         <Row>
-            <Col>
+            <Col hidden={formData.sophieu ? false : true}>
                 <Row>
                     <Col className="phieu-cuong" span="8">
                         <Row>
                             <div className="center">
                                 <div className="center">01:04:AM</div><br />
                                 <div>
-                                    <Barcode value={formData.key} />
+                                    <Barcode value={formData.sophieu ? formData.sophieu : '123456'} />
                                 </div>
                             </div>
                         </Row>
@@ -45,7 +45,7 @@ function Phieu(props) {
                                     <div className="qr-code">
                                         <div className="phieu-time">01:04:AM</div><br />
                                         <div>
-                                            <Barcode value={formData.key} />
+                                            <Barcode value={formData.sophieu ? formData.sophieu : '123456'} />
                                         </div>
                                     </div>
                                 </Row>

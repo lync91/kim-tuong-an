@@ -90,6 +90,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "4.0.0",
+    "@electron/remote": "^1.1.0",
     "adler-32": "^1.3.0",
     "antd": "^4.15.3",
     "antd-button-color": "^1.0.4",

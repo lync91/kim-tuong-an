@@ -1,5 +1,5 @@
 const { app, BrowserWindow, remote } = require('electron');
-const electron = require('electron')
+const electron = require('electron');
 
 const MenuManager = require('./app/src/global/menu.js');
 const UpdateManager = require('./app/src/global/update.js');
