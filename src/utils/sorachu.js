@@ -57,6 +57,12 @@ function dochangtrieu(_so, _daydu) {
     }
     return chuoi;
 }
+const capitalize = (string = '') => {
+  return string.replace(/^./, function (match) {
+    return match.toUpperCase();
+  });
+
+}
 export default function docso(_so) {
     let so = _so;
     if (so === 0) return mangso[0];
@@ -72,5 +78,5 @@ export default function docso(_so) {
         }
         hauto = ' tỷ';
     } while (so > 0);
-    return chuoi;
+    return capitalize(chuoi);
 }

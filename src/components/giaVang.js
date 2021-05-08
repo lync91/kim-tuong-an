@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, use } from 'react';
 import { Button, Form, Input, InputNumber } from 'antd';
 
 function GiaVang(props) {
@@ -6,7 +6,6 @@ function GiaVang(props) {
     const { data, onUpdate, onClose} = props;
     const _Click = () => {
         onUpdate(form.getFieldsValue());
-        onClose();
     }
     return (
         <Form
@@ -30,6 +29,9 @@ function GiaVang(props) {
                 <Input />
             </Form.Item>
             <Form.Item name="gia9999" label="9999" rules={[{ required: true }]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="laisuat" label="Lãi suất" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 16, span: 8 }}>

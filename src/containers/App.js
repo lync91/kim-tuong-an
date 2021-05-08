@@ -47,8 +47,7 @@ function App() {
                             <Link to="/"><Button type="primary" className="m-t-10" size="large" block><PieChartOutlined />Báo cáo</Button></Link>
                             <Link to="/taophieu"><Button type="primary" className="m-t-10" size="large" block><FormatPainterOutlined />Tạo phiếu cầm</Button></Link>
                             <Link to="/about"><Button type="primary" className="m-t-10" size="large" block><ScanOutlined />Quét phiếu cầm</Button></Link>
-                            <Link to="/"><Button type="primary" className="m-t-10" size="large" block><SearchOutlined />Tìm kiếm</Button></Link>
-                            <Link to="/thongKe"><Button type="primary" className="m-t-10" size="large" block><DatabaseOutlined />Thống kê</Button></Link>
+                            <Link to="/thongKe"><Button type="primary" className="m-t-10" size="large" block><DatabaseOutlined />Quản lý dữ liệu</Button></Link>
                         </Sider>
                         <Content>
                             <Switch>

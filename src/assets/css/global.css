@@ -118,3 +118,13 @@
     outline: 1;
     box-shadow: 0 0 0 2px rgba(0, 132, 255, 0.404);
 }
+.phieu-cuong {
+  font-size: 13pt;
+}
+.bangchu:first-letter {
+  text-transform: uppercase;
+}
+.site-card-wrapper {
+  padding: 30px;
+  background: #ececec;
+}

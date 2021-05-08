@@ -38,25 +38,42 @@
     "last 4 versions"
   ],
   "main": "main.js",
+  "build": {
+    "extraResources": [
+      {
+        "from": "./data/",
+        "to": "data",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  },
   "scripts": {
     "prod": "cross-env NODE_ENV=production webpack --mode production --config webpack.build.config.js && electron --noDevServer .",
     "start": "cross-env NODE_ENV=development webpack serve --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
     "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
     "package": "npm run build",
-    "postpackage": "electron-packager ./ --out=./builds"
+    "postpackage": "electron-packager ./ --out=./builds --overwrite"
   },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
     "@electron/remote": "^1.1.0",
     "antd": "^4.15.4",
     "antd-button-color": "^1.0.4",
+    "bwip-js": "^3.0.0",
+    "electron-pdf-window": "^1.0.12",
+    "electron-print": "^1.0.2",
+    "electron-settings": "^4.0.2",
     "generate-serial-number": "^0.0.3",
     "js-crc": "^0.2.0",
     "knex": "^0.95.4",
     "moment": "^2.29.1",
+    "pdfmake": "^0.1.71",
     "postcss": "^8.2.8",
     "react": "^17.0.1",
     "react-barcode": "^1.4.0",
+    "react-barcodes": "^1.1.0",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "sqlite3": "^5.0.2"

@@ -1,4 +1,6 @@
-const knex = require('./connect');
+import { remote } from 'electron';
+const knex = remote.require('./db/connect');
+
 const initdb = {
     createTable: () => {
         knex.schema
