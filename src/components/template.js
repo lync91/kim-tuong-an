@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { any } from 'prop-types';
+import React, { useEffect } from 'react';
 import docso from '../utils/sorachu';
+
 export function TemplatePhieu(props) {
   const { data } = props;
-  const [src, setStc] = useState('')
+  // const [src, setStc] = useState('')
   useEffect(() => {
 
   }, []);
@@ -45,4 +47,6 @@ export function TemplatePhieu(props) {
     </div>
   )
 }
+
+TemplatePhieu.propTypes = any;
 export default TemplatePhieu;

@@ -16,21 +16,13 @@ import {
     PieChartOutlined,
     FormatPainterOutlined,
     ScanOutlined,
-    SearchOutlined,
     DatabaseOutlined
 } from '@ant-design/icons';
-
-import { insertCamdo } from '../utils/db';
 
 import '../assets/css/App.css'
 
 
 function App() {
-  const _click = () => {
-    insertCamdo({sophieu: 'Test'}, (res) => {
-      console.log(res);
-    })
-  }
   return (
     <Router>
                 <Layout>

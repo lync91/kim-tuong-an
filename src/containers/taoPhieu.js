@@ -4,7 +4,6 @@ import {
   Layout,
   Form,
   Input,
-  Radio,
   Select,
   DatePicker,
   Row,
@@ -14,6 +13,7 @@ import {
   message
 } from 'antd';
 import Button from 'antd-button-color';
+const { RangePicker } = DatePicker;
 import moment from 'moment';
 import { crc16 } from 'js-crc';
 import { generate } from 'generate-serial-number';
@@ -25,13 +25,7 @@ import {
 } from '../utils/db';
 // const { PosPrinter } = remote.require('electron-pos-printer');
 
-import {
-  print,
-  printPreview
-} from '../utils/print'
-
-const { RangePicker } = DatePicker;
-
+import { printPreview } from '../utils/print'
 import Phieu from './Phieu';
 import GiaVang from '../components/giaVang';
 
@@ -141,7 +135,7 @@ function TaoPhieu() {
     }
   };
   const save = () => {
-    insertCamdo(form.getFieldsValue(), (res) => {
+    insertCamdo(form.getFieldsValue(), () => {
       message.success('Thêm thành công phiếu cầm đồ')
     });
   };

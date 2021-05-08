@@ -1,6 +1,7 @@
 import React from 'react';
 import Barcode from 'react-barcode';
-import { Col, Row, Skeleton } from 'antd';
+import { Col, Row } from 'antd';
+import { camdoTypes } from '../types/camdo';
 
 import docso from '../utils/sorachu';
 
@@ -83,5 +84,5 @@ function Phieu(props) {
     </Row>
   );
 }
-
+Phieu.propTypes = camdoTypes
 export default Phieu;

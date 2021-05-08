@@ -56,7 +56,7 @@ export function printPreview(data, preview) {
       console.log("All printer available are ", list);
 
       win.loadURL(`data:text/html,${encodeURIComponent(finalHtml)}`);
-      win.webContents.on('did-finish-load', () => {
+      if (!preview) win.webContents.on('did-finish-load', () => {
         win.webContents.print(options, (success, failureReason) => {
           if (!success) console.log(failureReason);
           console.log('Print Initiated');

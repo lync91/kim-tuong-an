@@ -1,9 +1,10 @@
-import React, { useState, use } from 'react';
-import { Button, Form, Input, InputNumber } from 'antd';
+import { any } from 'prop-types';
+import React from 'react';
+import { Button, Form, Input } from 'antd';
 
 function GiaVang(props) {
     const [form] = Form.useForm();
-    const { data, onUpdate, onClose} = props;
+    const { data, onUpdate} = props;
     const _Click = () => {
         onUpdate(form.getFieldsValue());
     }
@@ -40,5 +41,7 @@ function GiaVang(props) {
         </Form>
     );
 }
+
+GiaVang.propTypes = any;
 
 export default GiaVang;

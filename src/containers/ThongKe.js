@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { PageHeader, Layout, Tag, Button, Radio, Form, Drawer } from 'antd';
-import { SaveTwoTone, PrinterTwoTone, ProjectOutlined } from '@ant-design/icons';
+import { PageHeader, Layout, Radio, Form, Drawer } from 'antd';
+// import { SaveTwoTone, PrinterTwoTone, ProjectOutlined } from '@ant-design/icons';
 import BangThongKe from '../components/bangThongKe';
 import { getCamDo } from '../utils/db';
+import ChiTiet from '../components/chitiet';
 
 const defData = {
   key: 'tatca'
@@ -10,6 +11,7 @@ const defData = {
 
 function ThongKe() {
   const [table, updateTable] = useState([]);
+  const [curRow, setCurRow] = useState({});
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
   const getData = (key) => {
@@ -23,6 +25,7 @@ function ThongKe() {
     getCamDo(e.key, (res) => updateTable(res));
   }
   const _selectRow = (r) => {
+    setCurRow(r);
     setVisible(true);
     console.log(r);
   }
@@ -37,21 +40,19 @@ function ThongKe() {
         closable={false}
         visible={visible}
         onClose={onClose}
-        width={520}
+        width={720}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <ChiTiet data={curRow} />
       </Drawer>
       <PageHeader className="site-page-header"
         onBack={
           () => null}
-        title="Tạo phiếu cầm"
+        title="Quản lý dữ liệu"
         subTitle=""
         extra={
           (<Form form={form} onValuesChange={onKeyChange} >
             <Form.Item name="key">
-              <Radio.Group key='1' >
+                <Radio.Group key='1' >
                 <Radio.Button key='5' value="tatca">Tất cả</Radio.Button>
                 <Radio.Button key='2' value="conhan">Còn hạn</Radio.Button>
                 <Radio.Button key='3' value="quahan">Quá hạn</Radio.Button>
