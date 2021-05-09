@@ -53,7 +53,7 @@ const defData = {
   gia18K: 2900000,
   gia24K: 4900000,
   gia9999: 4900000,
-  giatinh: 0
+  gianhap: 0
 };
 
 function TaoPhieu() {
@@ -64,12 +64,12 @@ function TaoPhieu() {
   const [visible, setVisible] = useState(false);
 
   const calc = () => {
-    const giatinh = Number(form.getFieldValue(`gia${form.getFieldValue('loaivang')}`));
-    form.setFieldsValue({giatinh: giatinh});
+    const gianhap = Number(form.getFieldValue(`gia${form.getFieldValue('loaivang')}`));
+    form.setFieldsValue({gianhap: gianhap});
     const tongtrongluong = Number(form.getFieldValue('tongtrongluong'));
     const trongluonghot = Number(form.getFieldValue('trongluonghot'));
     const trongluongthuc = tongtrongluong - trongluonghot;
-    const tiencam = Math.round(trongluongthuc * giatinh);
+    const tiencam = Math.round(trongluongthuc * gianhap);
     form.setFieldsValue({ trongluongthuc: trongluongthuc, tiencam: tiencam });
     setFormData({ ...formData, ...form.getFieldsValue() });
   };
@@ -78,8 +78,8 @@ function TaoPhieu() {
       const key = `${crc16(`${res}${generate(4)}`)}${generate(4)}`;
       const ngayCamChuoc = [moment().format(dateFormat), moment().add(30, 'days').format(dateFormat)];
       console.log(ngayCamChuoc);
-      form.setFieldsValue({ ...defData, ...{ sophieu: key, giatinh: defData.gia18K } });
-      // setFormData({ ...defData, ...{ sophieu: key, giatinh: defData.gia18K} });
+      form.setFieldsValue({ ...defData, ...{ sophieu: key, gianhap: defData.gia18K } });
+      // setFormData({ ...defData, ...{ sophieu: key, gianhap: defData.gia18K} });
     });
   };
   useEffect(async () => {
@@ -125,13 +125,13 @@ function TaoPhieu() {
     switch (e) {
       default:
       case '18K':
-        onGiaUpdate({ giatinh: form.getFieldValue('gia18K') });
+        onGiaUpdate({ gianhap: form.getFieldValue('gia18K') });
         return;
       case '24K':
-        onGiaUpdate({ giatinh: form.getFieldValue('gia24K') });
+        onGiaUpdate({ gianhap: form.getFieldValue('gia24K') });
         return;
       case '9999':
-        onGiaUpdate({ giatinh: form.getFieldValue('gia9999') });
+        onGiaUpdate({ gianhap: form.getFieldValue('gia9999') });
     }
   };
   const save = () => {
@@ -240,8 +240,11 @@ function TaoPhieu() {
                   <Input placeholder="Thực" disabled />
                 </Form.Item>
               </Form.Item>
-              <Form.Item label="Tiền cầm" name="tiencam" disabled>
-                <Input className={currentInput === 'tiencam' ? 'input-focused' : ''} />
+              <Form.Item label="Giá nhập" name="gianhap">
+                <Input disabled className={currentInput === 'gianhap' ? 'input-focused' : ''} />
+              </Form.Item>
+              <Form.Item label="Tiền cầm" name="tiencam">
+                <Input disabled className={currentInput === 'tiencam' ? 'input-focused' : ''} />
               </Form.Item>
               <Form.Item label="Ngày cầm - chuộc" name="ngayCamChuoc" >
                 <RangePicker

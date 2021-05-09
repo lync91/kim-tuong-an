@@ -1,11 +1,12 @@
 import React from 'react';
 import { Table, Space, Tag } from 'antd';
 import moment from 'moment';
+import { any } from 'prop-types';
 const { Column, ColumnGroup } = Table;
 const labelRender = (e, c) => {
   let text = '';
   let color = ''
-  var start = moment(c.ngaycam).format('X');
+  // var start = moment(c.ngaycam).format('X');
   var end = moment(c.ngayhethan).format('X');
   var now = moment().format('X');
   const han = (end - now) / (60*60*24);
@@ -48,8 +49,8 @@ function BangThongKe(props) {
         <Column title="Ngày hết hạn" dataIndex="ngayhethan" key="ngayhethan" render={e => e ? moment(e).format('DD/MM/YYYY') : ''} />
         <Column title="Tiền cầm" render={e => `${e}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')} dataIndex="tiencam" key="tiencam" />
         <Column title="Lãi suất" dataIndex="laisuat" key="laisuat" />
-        <Column title="Tiền lãi" dataIndex="tienlai" key="tienlai" />
-        <Column title="Tiền chuộc" dataIndex="tienchuoc" key="tienchuoc" />
+        <Column title="Tiền lãi" render={e => e ? `${e}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''} dataIndex="tienlai" key="tienlai" />
+        <Column title="Tiền chuộc" render={e => e ? `${e}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''} dataIndex="tienchuoc" key="tienchuoc" />
         <Column title="Ngày chuộc" dataIndex="ngaychuoc" key="ngaychuoc" render={e => e ? moment(e).format('DD/MM/YYYY') : ''} />
         <Column
           title="Tình trạng"
@@ -62,7 +63,7 @@ function BangThongKe(props) {
           key="action"
           render={(text, record) => (
             <Space size="middle">
-              <a onClick={(e) => onSelectRow(record)}>Chi tiết</a>
+              <a onClick={() => onSelectRow(record)}>Chi tiết</a>
             </Space>
           )}
         />
@@ -70,5 +71,5 @@ function BangThongKe(props) {
     </div>
   );
 }
-
+BangThongKe.propTypes = any
 export default BangThongKe;

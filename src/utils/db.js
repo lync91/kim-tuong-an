@@ -21,9 +21,21 @@ export function insertCamdo(data, fn) {
   delete data.gia9999;
   delete data.ngayCamChuoc;
   data.tongtrongluong = Number(data.tongtrongluong);
-  console.log(data);
   knex('camdo').insert(data)
     .then(res => fn(res));
+}
+export function updateCamDo(id, data, fn) {
+  delete data.size;
+  delete data.ngayChuocCam;
+  delete data.gia18K;
+  delete data.gia24K;
+  delete data.gia9999;
+  delete data.ngayCamChuoc;
+  delete data.songay;
+  knex('camdo')
+  .where('id', '=', id)
+  .update(data)
+  .then(res => fn(res))
 }
 export function getCamDo(key, fn) {
   console.log(key);
@@ -35,16 +47,16 @@ export function getCamDo(key, fn) {
       builder.where('dachuoc', '<=', 0)
     )
     .andWhere('ngayhethan', '>', moment().format('x'))
+    .orderBy('id', 'desc')
     .then(res => fn(res));
   if (key === 'quahan') knex('camdo')
     .where((builder) =>
-      builder.where('dachuoc', '<=', 0)
+      builder.where('dachuoc', '>=', 1)
     )
     .andWhere('ngayhethan', '<', moment().format('x'))
+    .orderBy('id', 'desc')
     .then(res => fn(res));
   if (key === 'dachuoc') knex('camdo')
-    .where((builder) =>
-      builder.where('dachuoc', '>', 0)
-    )
+    .where('dachuoc', '>=', 1)
     .then(res => fn(res));
 }

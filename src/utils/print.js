@@ -44,9 +44,8 @@ export function printPreview(data, preview) {
   }
 
   bwipjs.toBuffer(barOptions, function (err, png) {
-    if (err) {
-
-    } else {
+    if (err) {console.log(err);}
+    else {
       const src = 'data:image/png;base64,' + png.toString('base64');
       const htmlString = renderToString(<TemplatePhieu data={{ ...data, ...{ src: src } }} />);
 

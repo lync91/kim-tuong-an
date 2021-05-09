@@ -1,7 +1,7 @@
 import { remote } from 'electron';
 const knex = remote.require('./db/connect');
 
-const initdb = {
+export const initdb = {
     createTable: () => {
         knex.schema
             .createTable('users', (table) => {
@@ -41,4 +41,3 @@ const initdb = {
             });
     }
 };
-module.exports = initdb;

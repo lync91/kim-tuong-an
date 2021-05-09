@@ -27,7 +27,6 @@ function ThongKe() {
   const _selectRow = (r) => {
     setCurRow(r);
     setVisible(true);
-    console.log(r);
   }
   const onClose = () => {
     setVisible(false);
@@ -37,10 +36,11 @@ function ThongKe() {
       <Drawer
         title="Thông tin cầm đồ"
         placement="right"
-        closable={false}
+        closable={true}
         visible={visible}
         onClose={onClose}
         width={720}
+        close={onClose}
       >
         <ChiTiet data={curRow} />
       </Drawer>
