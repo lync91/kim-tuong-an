@@ -15,7 +15,7 @@ const insertPhieuCam = (data) => {
 
 const test = (fn) => {
   const isDevelopment = process.env.NODE_ENV === 'development';
-  const filePath = isDevelopment ? path.join(__dirname, '..', 'data/database.sqlite') : path.join(__dirname, '..', '..', 'data/database.sqlite');
+  const filePath = isDevelopment ? path.join(__dirname, '..', 'data/database.sqlite') : path.join(__dirname, '..', '..', 'app/data/database.sqlite');
   fn(filePath)
 }
 

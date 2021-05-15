@@ -20,6 +20,8 @@ import { generate } from 'generate-serial-number';
 import { SaveTwoTone, PrinterTwoTone, ProjectOutlined } from '@ant-design/icons';
 import Keyboard from 'react-simple-keyboard';
 import settings from 'electron-settings';
+import { remote } from 'electron';
+const db = remote.require('./db');
 import {
   getLastId,
   insertCamdo
@@ -39,10 +41,10 @@ const dateFormat1 = 'DD/MM/YYYY';
 
 const defData = {
   sophieu: '123456789',
-  tenkhach: 'Mã Đại Phúc',
+  tenkhach: '',
   dienthoai: '',
-  monhang: '1N 2V',
-  loaivang: '18K',
+  monhang: '',
+  loaivang: '',
   tongtrongluong: '1',
   trongluonghot: '',
   trongluongthuc: '',
@@ -84,6 +86,7 @@ function TaoPhieu() {
     });
   };
   useEffect(async () => {
+    db.test(res => console.log(res))
     genKey();
     console.log(defData);
     // console.log(await settings.get('giavang'));

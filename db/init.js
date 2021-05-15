@@ -11,23 +11,25 @@ const initdb = {
     createCamDo: () => {
         knex.schema
             .createTable('camdo', (table) => {
-                table.increments('id');
-                table.string('sophieu');
-                table.string('tenkhach');
-                table.string('dienthoai');
-                table.string('monhang');
-                table.string('loaivang');
-                table.float('tongtrongluong');
-                table.float('trongluonghot');
-                table.float('trongluongthuc');
-                table.integer('gianhap');
-                table.integer('tiencam');
-                table.integer('laisuat');
-                table.integer('tienlai');
-                table.integer('tienchuoc');
-                table.integer('ngaycam');
-                table.integer('ngaychuoc');
-                table.timestamps();
+              table.increments('id');
+              table.string('sophieu');
+              table.string('tenkhach');
+              table.string('dienthoai');
+              table.string('monhang');
+              table.string('loaivang');
+              table.float('tongtrongluong');
+              table.float('trongluonghot');
+              table.float('trongluongthuc');
+              table.integer('gianhap');
+              table.integer('tiencam');
+              table.integer('laisuat');
+              table.integer('tienlai');
+              table.integer('tienchuoc');
+              table.integer('ngaycam');
+              table.integer('ngayhethan');
+              table.integer('ngaychuoc');
+              table.integer('dachuoc');
+              table.timestamps();
             }).then((rows) => {
                 console.log(rows);
             });

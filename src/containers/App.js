@@ -13,6 +13,7 @@ import Home from './Home';
 import TaoPhieu from './taoPhieu';
 import ThongKe from './ThongKe';
 import QuetPhieu from './quetPhieu';
+import ThietLap from './ThietLap';
 import {
   PieChartOutlined,
   FormatPainterOutlined,
@@ -40,6 +41,7 @@ function App() {
             <Link to="/taophieu"><Button type="primary" className="m-t-10" size="large" block><FormatPainterOutlined />Tạo phiếu cầm</Button></Link>
             <Link to="/quetphieu"><Button type="primary" className="m-t-10" size="large" block><ScanOutlined />Quét phiếu cầm</Button></Link>
             <Link to="/thongKe"><Button type="primary" className="m-t-10" size="large" block><DatabaseOutlined />Quản lý dữ liệu</Button></Link>
+            <Link to="/thietlap"><Button type="primary" className="m-t-10" size="large" block><DatabaseOutlined />Cài đặt</Button></Link>
           </Sider>
           <Content>
             <Switch>
@@ -57,6 +59,9 @@ function App() {
               </Route>
               <Route path="/thongKe">
                 <ThongKe />
+              </Route>
+              <Route path="/thietlap">
+                <ThietLap />
               </Route>
             </Switch>
           </Content>
