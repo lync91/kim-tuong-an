@@ -18,6 +18,7 @@ import moment from 'moment';
 import { crc16 } from 'js-crc';
 import { generate } from 'generate-serial-number';
 import { SaveTwoTone, PrinterTwoTone, ProjectOutlined } from '@ant-design/icons';
+import Keyboard from 'react-simple-keyboard';
 import settings from 'electron-settings';
 import {
   getLastId,
@@ -65,7 +66,7 @@ function TaoPhieu() {
 
   const calc = () => {
     const gianhap = Number(form.getFieldValue(`gia${form.getFieldValue('loaivang')}`));
-    form.setFieldsValue({gianhap: gianhap});
+    form.setFieldsValue({ gianhap: gianhap });
     const tongtrongluong = Number(form.getFieldValue('tongtrongluong'));
     const trongluonghot = Number(form.getFieldValue('trongluonghot'));
     const trongluongthuc = tongtrongluong - trongluonghot;
@@ -114,8 +115,8 @@ function TaoPhieu() {
   };
   const onGiaUpdate = (data) => {
     form.setFieldsValue(data);
-    settings.set({giavang: data});
-    setFormData({...formData, ...{gia18K: Number(data.gia18K)}});
+    settings.set({ giavang: data });
+    setFormData({ ...formData, ...{ gia18K: Number(data.gia18K) } });
     const tmp = form.getFieldValue('loaivang');
     console.log(tmp);
     calc();
@@ -142,9 +143,21 @@ function TaoPhieu() {
   const print = () => {
     printPreview(form.getFieldsValue(), false);
   }
+  const saveAndPrint = () => {
+    insertCamdo(form.getFieldsValue(), () => {
+      message.success('Thêm thành công phiếu cầm đồ');
+      printPreview(form.getFieldsValue(), false);
+    });
+  }
   const testdate = (e, v) => {
     console.log(e)
     console.log(v);
+  }
+  const onkeyboardChange = (e) => {
+    console.log(e);
+  }
+  const onkeyboardKeyPress = (e) => {
+    console.log(e);
   }
   return (
     <div >
@@ -159,9 +172,9 @@ function TaoPhieu() {
             <Tag key="4" className="tag-gia" color="volcano" onClick={showDrawer}>Vàng 18K: <b>{`${formData.gia18K}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b></Tag>,
             <Tag key="5" className="tag-gia" color="orange" onClick={showDrawer}>Vàng 24K: <b>{`${formData.gia24K}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b></Tag>,
             <Tag key="6" className="tag-gia" color="gold" onClick={showDrawer}>Vàng 9999: <b>{`${formData.gia9999}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b></Tag>,
-            <Button key="3" onClick={save} ><SaveTwoTone />Lưu</Button>,
-            <Button key="2" onClick={print}><PrinterTwoTone /> In </Button>,
-            <Button key="1" type="primary" ><ProjectOutlined />Lưu và in</Button>,
+            <Button key="3" hidden onClick={save} ><SaveTwoTone />Lưu</Button>,
+            <Button key="2" hidden onClick={print}><PrinterTwoTone /> In </Button>,
+            <Button key="1" type="primary" onClick={saveAndPrint} ><ProjectOutlined />Lưu và in</Button>,
           ]
         }
       />
@@ -191,7 +204,9 @@ function TaoPhieu() {
                 }
               }
               layout="horizontal"
-              onValuesChange={(v, vs) => _onValuesChange(v, vs)} >
+              onValuesChange={(v, vs) => _onValuesChange(v, vs)}
+              className="form-tao-phieu"
+            >
               <Form.Item label="Mã số phiếu" name="sophieu" >
                 <Input disabled />
               </Form.Item>
@@ -254,16 +269,16 @@ function TaoPhieu() {
                 />
               </Form.Item>
               <Form.Item hidden name="gia18K">
-                    <Input />
+                <Input />
               </Form.Item>
               <Form.Item hidden name="gia24K">
-                    <Input />
+                <Input />
               </Form.Item>
               <Form.Item hidden name="gia9999">
-                    <Input />
+                <Input />
               </Form.Item>
               <Form.Item hidden name="laisuat">
-                    <Input />
+                <Input />
               </Form.Item>
               <Form.Item hidden label="Button" >
                 <Button > Button </Button>
@@ -306,7 +321,13 @@ function TaoPhieu() {
             <Phieu formData={formData} />
           </Col>
         </Row>
-
+        <Row hidden>
+          <Keyboard
+            onChange={onkeyboardChange}
+            onKeyPress={onkeyboardKeyPress}
+            layoutName="shift"
+          />
+        </Row>
       </Layout>
     </div>
   );

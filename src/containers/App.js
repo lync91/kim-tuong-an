@@ -12,6 +12,7 @@ const { Header, Footer, Sider, Content } = Layout;
 import Home from './Home';
 import TaoPhieu from './taoPhieu';
 import ThongKe from './ThongKe';
+import QuetPhieu from './quetPhieu';
 import {
   PieChartOutlined,
   FormatPainterOutlined,
@@ -37,7 +38,7 @@ function App() {
           <Sider className="p-5">
             <Link to="/"><Button type="primary" className="m-t-10" size="large" block><PieChartOutlined />Báo cáo</Button></Link>
             <Link to="/taophieu"><Button type="primary" className="m-t-10" size="large" block><FormatPainterOutlined />Tạo phiếu cầm</Button></Link>
-            <Link to="/about"><Button type="primary" className="m-t-10" size="large" block><ScanOutlined />Quét phiếu cầm</Button></Link>
+            <Link to="/quetphieu"><Button type="primary" className="m-t-10" size="large" block><ScanOutlined />Quét phiếu cầm</Button></Link>
             <Link to="/thongKe"><Button type="primary" className="m-t-10" size="large" block><DatabaseOutlined />Quản lý dữ liệu</Button></Link>
           </Sider>
           <Content>
@@ -48,8 +49,8 @@ function App() {
               <Route path="/about">
                 <Home />
               </Route>
-              <Route path="/dashboard">
-                <Home />
+              <Route path="/quetphieu">
+                <QuetPhieu />
               </Route>
               <Route path="/taophieu">
                 <TaoPhieu />

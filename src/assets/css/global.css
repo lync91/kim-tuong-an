@@ -131,3 +131,17 @@
 .chitiet-btn button {
   margin-right: 5px;
 }
+.phieu-tam {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.form-chi-tiet .ant-input[disabled] {
+  color: black !important;
+}
+
+.form-tao-phieu .ant-input[disabled] {
+  color: black !important;
+}
+.hg-theme-default {
+  width: 1000px !important;
+}

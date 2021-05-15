@@ -1,33 +1,24 @@
 {
-  "name": "electron-react-webpack-boilerplate",
+  "name": "kim-tuong-an",
   "version": "1.15.0",
-  "description": "Minimal Electron, React, PostCSS and Webpack boilerplate to help you get started with building your next app.",
+  "description": "Phần mềm quản lý cầm đồ",
   "license": "MIT",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/alexdevero/electron-react-webpack-boilerplate.git"
+    "url": "https://github.com/lync91/kim-tuong-an.git"
   },
   "homepage": "",
   "bugs": {
-    "url": "https://github.com/alexdevero/electron-react-webpack-boilerplate/issues"
+    "url": "https://github.com/lync91/kim-tuong-an/issues"
   },
   "author": {
-    "name": "Alex Devero",
-    "email": "deveroalex@gmail.com",
-    "url": "https://github.com/alexdevero"
+    "name": "Vũ Văn Lịch",
+    "email": "mr.lync91@gmail.com",
+    "url": "https://github.com/lync91"
   },
   "keywords": [
-    "app",
-    "boilerplate",
-    "electron",
-    "open",
-    "open-source",
-    "postcss",
-    "react",
-    "reactjs",
-    "source",
-    "webpack"
+    "app"
   ],
   "engines": {
     "node": ">=9.0.0",
@@ -78,6 +69,7 @@
     "react-barcodes": "^1.1.0",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
+    "react-simple-keyboard": "^3.0.93",
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {

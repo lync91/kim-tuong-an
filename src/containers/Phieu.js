@@ -1,26 +1,27 @@
 import React from 'react';
 import Barcode from 'react-barcode';
 import { Col, Row } from 'antd';
-import { camdoTypes } from '../types/camdo';
 
 import docso from '../utils/sorachu';
+import { any } from 'prop-types';
 
 function Phieu(props) {
-  const { formData } = props;
+  const { formData, hideCuong } = props;
   return (
     <Row>
-      <Col hidden={formData.sophieu ? false : true}>
+      <Col>
         <Row>
-          <Col className="phieu-cuong" span="8">
+          <Col className="phieu-cuong" span="8" hidden={hideCuong}>
             <Row>
               <div className="center">
-                <div className="center"><h3>{formData.ngayCamChuoc[0].format('h:mm A')}</h3></div><br />
+                <div className="center"><h3>{formData.ngayCamChuoc ? formData.ngayCamChuoc[0].format('h:mm A') : ''}</h3></div><br />
                 <div>
                   <Barcode value={formData.sophieu ? formData.sophieu : '123456'} /><br />
                 </div>
                 <b>{formData.tenkhach}</b><br />
                 <b>{formData.dienthoai}</b><br />
                 <b>{`${formData.monhang} (${formData.loaivang})`}</b><br /><br />
+                <b>{`Trọng lượng ${formData.trongluongthuc}`}</b><br /><br />
                 <b>{`${formData.tiencam}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b><br />
 
               </div>
@@ -49,7 +50,7 @@ function Phieu(props) {
                 </Row>
                 <Row>
                   <div className="qr-code">
-                    <div className="phieu-time">{formData.ngayCamChuoc[0].format('h:mm A')}</div><br />
+                    <div className="phieu-time">{formData.ngayCamChuoc ? formData.ngayCamChuoc[0].format('h:mm A') : ''}</div><br />
                     <div>
                       <Barcode value={formData.sophieu ? formData.sophieu : '123456'} />
                     </div>
@@ -66,12 +67,12 @@ function Phieu(props) {
               <div className="phieu-content">
                 Ông bà: <b>{formData.tenkhach}</b><br />
                                         ĐT: <b>{formData.dienthoai}</b><br />
-                                        Món hàng: <b>{`${formData.monhang} (${formData.loaivang})`}</b><br /><br />
+                                        Món hàng: <b>{`${formData.monhang} (${formData.loaivang}) - Trọng lượng: ${formData.trongluongthuc}`}</b><br /><br />
                                         Số tiền cầm: <b>{`${formData.tiencam}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b><br />
                                         Viết bằng chữ: <div className="bangchu"><i>{docso(formData.tiencam)} đồng</i></div><br />
                 <Row>
-                  <Col span={12}>Ngày cầm: <b>{formData.ngayCamChuoc[0].format('DD/MM/YYYY').toString()}</b></Col>
-                  <Col> Ngày chuộc: <b>{formData.ngayCamChuoc[1].format('DD/MM/YYYY').toString()}</b></Col><br />
+                  <Col span={12}>Ngày cầm: <b>{formData.ngayCamChuoc ? formData.ngayCamChuoc[0].format('DD/MM/YYYY').toString() : ''}</b></Col>
+                  <Col> Ngày chuộc: <b>{formData.ngayCamChuoc ? formData.ngayCamChuoc[1].format('DD/MM/YYYY').toString() : ''}</b></Col><br />
                 </Row>
                                         Người lập phiếu: <br />
                 <b>Biên nhận có giá trị trong 30 ngày</b> (Nếu chưa chuộc thì quý khách phải đến đóng lãi mỗi tháng một lần)<br />
@@ -84,5 +85,5 @@ function Phieu(props) {
     </Row>
   );
 }
-Phieu.propTypes = camdoTypes
+Phieu.propTypes = any;
 export default Phieu;

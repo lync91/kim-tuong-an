@@ -25,8 +25,12 @@ export function insertCamdo(data, fn) {
     .then(res => fn(res));
 }
 export function updateCamDo(id, data, fn) {
+  if (data.ngayCamChuoc) {
+    data.ngaycam = moment(data.ngayCamChuoc[0]).format('x');
+    data.ngaychuoc = moment(data.ngayCamChuoc[1]).format('x');
+  }
   delete data.size;
-  delete data.ngayChuocCam;
+  delete data.ngayCamChuoc;
   delete data.gia18K;
   delete data.gia24K;
   delete data.gia9999;
@@ -42,21 +46,32 @@ export function getCamDo(key, fn) {
   const camdo = knex('camdo').select()
     .orderBy('id', 'desc')
   if (key === 'tatca') camdo.then(res => fn(res));
-  if (key === 'conhan') knex('camdo')
-    .where((builder) =>
-      builder.where('dachuoc', '<=', 0)
-    )
-    .andWhere('ngayhethan', '>', moment().format('x'))
-    .orderBy('id', 'desc')
-    .then(res => fn(res));
-  if (key === 'quahan') knex('camdo')
-    .where((builder) =>
-      builder.where('dachuoc', '>=', 1)
-    )
-    .andWhere('ngayhethan', '<', moment().format('x'))
-    .orderBy('id', 'desc')
-    .then(res => fn(res));
-  if (key === 'dachuoc') knex('camdo')
-    .where('dachuoc', '>=', 1)
-    .then(res => fn(res));
+  if (key === 'conhan') camdo.whereRaw('ngayhethan > ? and dachuoc <= ?', [moment().format('x'), 0]).then(res => fn(res))
+  if (key === 'quahan') camdo.whereRaw('ngayhethan < ? and dachuoc <= ?', [moment().format('x'), 0]).then(res => fn(res))
+  if (key === 'dachuoc') camdo.whereRaw('dachuoc > ?', [0]).then(res => fn(res))
+}
+export function deleteCamDo(id, fn) {
+  knex('camdo')
+  .where('id', id)
+  .del()
+  .then(res => fn(res));
+}
+export function timPhieu(sophieu, fn) {
+  knex('camdo')
+  .where('sophieu', sophieu)
+  .then(res => fn(res));
+}
+export function timPhieubyID(id, fn) {
+  knex('camdo')
+  .where('id', id)
+  .then(res => fn(res));
+}
+export function timKiem(text, fn) {
+  const dateNumber = moment(text, 'DD/MM/YYYY').format('X').toString().substring(0, 5);
+  console.log(dateNumber);
+  const camdo = knex('camdo');
+  camdo.whereRaw(`id = '${text}' or sophieu like '%${text}%' or tenkhach like '%${text}%' or ngaycam like '%${dateNumber}%'`)
+  // .orwhere('sophieu', text)
+  // .orwhere('tenkhach', 'LIKE', `%${text}%`)
+  .then(res => fn(res));
 }

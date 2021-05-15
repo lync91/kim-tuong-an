@@ -1,0 +1,15 @@
+<html>
+
+<body>
+  <p id="demo">Pressed Key: </p>
+  <script>
+    document.onkeypress = function (event) {
+      var elem = document.getElementById("demo")
+      elem.innerHTML = 'Pressed Key: ' + event.key
+      if (event.shiftKey) elem.innerHTML += ' + Shift '
+      if (event.ctrlKey) elem.innerHTML += ' + Ctrl '
+      if (event.metaKey) elem.innerHTML += ' + Win/Cmd '
+    }
+  </script>
+</body>
+</html>
