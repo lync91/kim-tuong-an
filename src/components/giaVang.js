@@ -26,7 +26,7 @@ function GiaVang(props) {
             <Form.Item name="gia18K" label="18K" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="gia24K" label="24K" rules={[{ required: true }]}>
+            <Form.Item name="gia23K" label="23K" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
             <Form.Item name="gia9999" label="9999" rules={[{ required: true }]}>

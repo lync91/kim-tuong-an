@@ -15,17 +15,16 @@ import {
 import Button from 'antd-button-color';
 const { RangePicker } = DatePicker;
 import moment from 'moment';
-import { crc16 } from 'js-crc';
-import { generate } from 'generate-serial-number';
+// import { crc16 } from 'js-crc';
+// import { generate } from 'generate-serial-number';
 import { SaveTwoTone, PrinterTwoTone, ProjectOutlined } from '@ant-design/icons';
 import Keyboard from 'react-simple-keyboard';
 import settings from 'electron-settings';
-import { remote } from 'electron';
-const db = remote.require('./db');
 import {
   getLastId,
-  insertCamdo
+  insertCamdo,
 } from '../utils/db';
+import { padDigits } from '../utils/tools';
 // const { PosPrinter } = remote.require('electron-pos-printer');
 
 import { printPreview } from '../utils/print'
@@ -40,21 +39,22 @@ const dateFormat1 = 'DD/MM/YYYY';
 // };
 
 const defData = {
-  sophieu: '123456789',
+  sophieu: '0000000000',
   tenkhach: '',
   dienthoai: '',
   monhang: '',
-  loaivang: '',
+  loaivang: '18K',
   tongtrongluong: '1',
   trongluonghot: '',
   trongluongthuc: '',
+  giatoida: '',
   tiencam: '',
   ngayCamChuoc: [moment(moment().format(dateFormat), dateFormat), moment(moment().add(30, 'days').format(dateFormat), dateFormat)],
   ngaychuoc: '',
   ngaycam: '',
   laisuat: 5,
   gia18K: 2900000,
-  gia24K: 4900000,
+  gia23K: 4900000,
   gia9999: 4900000,
   gianhap: 0
 };
@@ -72,21 +72,19 @@ function TaoPhieu() {
     const tongtrongluong = Number(form.getFieldValue('tongtrongluong'));
     const trongluonghot = Number(form.getFieldValue('trongluonghot'));
     const trongluongthuc = tongtrongluong - trongluonghot;
-    const tiencam = Math.round(trongluongthuc * gianhap);
-    form.setFieldsValue({ trongluongthuc: trongluongthuc, tiencam: tiencam });
+    const giatoida = Math.round(trongluongthuc * gianhap);
+    form.setFieldsValue({ trongluongthuc: trongluongthuc, giatoida: giatoida });
     setFormData({ ...formData, ...form.getFieldsValue() });
   };
   const genKey = () => {
     getLastId((res) => {
-      const key = `${crc16(`${res}${generate(4)}`)}${generate(4)}`;
-      const ngayCamChuoc = [moment().format(dateFormat), moment().add(30, 'days').format(dateFormat)];
-      console.log(ngayCamChuoc);
+      const key = `${padDigits(res + 1, 9)}`;
+      // const ngayCamChuoc = [moment().format(dateFormat), moment().add(30, 'days').format(dateFormat)];
+      // console.log(ngayCamChuoc);
       form.setFieldsValue({ ...defData, ...{ sophieu: key, gianhap: defData.gia18K } });
-      // setFormData({ ...defData, ...{ sophieu: key, gianhap: defData.gia18K} });
     });
   };
   useEffect(async () => {
-    db.test(res => console.log(res))
     genKey();
     console.log(defData);
     // console.log(await settings.get('giavang'));
@@ -105,6 +103,13 @@ function TaoPhieu() {
   const btnClick = (key, addspace) => {
     const tmp = {};
     tmp[currentInput] = `${form.getFieldValue(currentInput)}${key}${addspace ? ' ' : ''}`;
+    form.setFieldsValue(tmp);
+    setFormData({ ...formData, ...form.getFieldsValue() });
+    calc();
+  };
+  const btnXoaClick = () => {
+    const tmp = {};
+    tmp[currentInput] = ``;
     form.setFieldsValue(tmp);
     setFormData({ ...formData, ...form.getFieldsValue() });
     calc();
@@ -131,8 +136,8 @@ function TaoPhieu() {
       case '18K':
         onGiaUpdate({ gianhap: form.getFieldValue('gia18K') });
         return;
-      case '24K':
-        onGiaUpdate({ gianhap: form.getFieldValue('gia24K') });
+      case '23K':
+        onGiaUpdate({ gianhap: form.getFieldValue('gia23K') });
         return;
       case '9999':
         onGiaUpdate({ gianhap: form.getFieldValue('gia9999') });
@@ -173,7 +178,7 @@ function TaoPhieu() {
           [
             <Tag key="7" className="tag-gia" color="volcano" onClick={showDrawer}>Lãi suất: <b>{`${formData.laisuat}%`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b></Tag>,
             <Tag key="4" className="tag-gia" color="volcano" onClick={showDrawer}>Vàng 18K: <b>{`${formData.gia18K}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b></Tag>,
-            <Tag key="5" className="tag-gia" color="orange" onClick={showDrawer}>Vàng 24K: <b>{`${formData.gia24K}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b></Tag>,
+            <Tag key="5" className="tag-gia" color="orange" onClick={showDrawer}>Vàng 23K: <b>{`${formData.gia23K}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b></Tag>,
             <Tag key="6" className="tag-gia" color="gold" onClick={showDrawer}>Vàng 9999: <b>{`${formData.gia9999}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b></Tag>,
             <Button key="3" hidden onClick={save} ><SaveTwoTone />Lưu</Button>,
             <Button key="2" hidden onClick={print}><PrinterTwoTone /> In </Button>,
@@ -225,7 +230,7 @@ function TaoPhieu() {
               <Form.Item label="Loại vàng" name="loaivang" >
                 <Select onChange={_selectGia}>
                   <Select.Option value="18K" >18K</Select.Option>
-                  <Select.Option value="24K" >24K</Select.Option>
+                  <Select.Option value="23K" >23K</Select.Option>
                   <Select.Option value="9999" >9999</Select.Option>
                 </Select>
               </Form.Item>
@@ -261,8 +266,11 @@ function TaoPhieu() {
               <Form.Item label="Giá nhập" name="gianhap">
                 <Input disabled className={currentInput === 'gianhap' ? 'input-focused' : ''} />
               </Form.Item>
+              <Form.Item label="Giá tối đa" name="giatoida">
+                <Input disabled onClick={() => setCurrentInput('giatoida')} className={currentInput === 'giatoida' ? 'input-focused' : ''} />
+              </Form.Item>
               <Form.Item label="Tiền cầm" name="tiencam">
-                <Input disabled className={currentInput === 'tiencam' ? 'input-focused' : ''} />
+                <Input onClick={() => setCurrentInput('tiencam')} className={currentInput === 'tiencam' ? 'input-focused' : ''} />
               </Form.Item>
               <Form.Item label="Ngày cầm - chuộc" name="ngayCamChuoc" >
                 <RangePicker
@@ -274,7 +282,7 @@ function TaoPhieu() {
               <Form.Item hidden name="gia18K">
                 <Input />
               </Form.Item>
-              <Form.Item hidden name="gia24K">
+              <Form.Item hidden name="gia23K">
                 <Input />
               </Form.Item>
               <Form.Item hidden name="gia9999">
@@ -293,25 +301,25 @@ function TaoPhieu() {
                   <Button type="success" size="large" onClick={() => btnClick('1')} > 1 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('2')} > 2 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('3')} > 3 </Button>
-                  <Button type="warning" size="large" onClick={() => btnClick('18K')} > 18K </Button>
+                  <Button type="warning" size="large" onClick={() => btnClick('L', true)} > L </Button>
                   <Button type="default" size="large" onClick={() => btnClick('N', true)} > N </Button>
                 </Row>
                 <Row >
                   <Button type="success" size="large" onClick={() => btnClick('4')} > 4 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('5')} > 5 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('6')} > 6 </Button>
-                  <Button type="warning" size="large" onClick={() => btnClick('24K')} > 24K </Button>
+                  <Button type="warning" size="large" onClick={() => btnClick('')} >  </Button>
                   <Button type="default" size="large" onClick={() => btnClick('V', true)} > V </Button>
                 </Row>
                 <Row >
                   <Button type="success" size="large" onClick={() => btnClick('7')} > 7 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('8')} > 8 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('9')} > 9 </Button>
-                  <Button type="warning" size="large" onClick={() => btnClick('9999')} > 9999 </Button>
+                  <Button type="warning" size="large" onClick={() => btnClick('')} >  </Button>
                   <Button type="default" size="large" onClick={() => btnClick('D', true)} > D </Button>
                 </Row>
                 <Row >
-                  <Button type="danger" size="large" onClick={() => btnClick('D')} > Xóa </Button>
+                  <Button type="danger" size="large" onClick={() => btnXoaClick()} > Xóa </Button>
                   <Button type="success" size="large" onClick={() => btnClick('0')} > 0 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('.')} > . </Button>
                   <Button type="primary" size="large" onClick={() => btnClick('D')} > Enter </Button>

@@ -1,8 +1,5 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import TemplatePhieu from '../components/template';
 import { html } from './htmlstring';
 import { remote } from 'electron';

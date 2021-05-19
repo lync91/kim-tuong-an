@@ -27,6 +27,7 @@ const initdb = {
               table.integer('tienchuoc');
               table.integer('ngaycam');
               table.integer('ngayhethan');
+              table.integer('ngaygiahan');
               table.integer('ngaychuoc');
               table.integer('dachuoc');
               table.timestamps();

@@ -3,7 +3,7 @@ import moment from 'moment';
 const knex = remote.require('./db/connect');
 const db = remote.require('./db');
 
-export async function getLastId(fn) {
+export function getLastId(fn) {
   knex('camdo').max({ a: 'id' })
     .then(res => {
       const id = res[0].a;
@@ -14,11 +14,13 @@ export function insertCamdo(data, fn) {
   db.test(res => console.log(res))
   data.ngaycam = data.ngayCamChuoc[0].format('x');
   data.ngayhethan = data.ngayCamChuoc[1].format('x');
+  data.ngaygiahan = data.ngayCamChuoc[0].format('x');
   delete data.size;
   delete data.ngayChuocCam;
   delete data.gia18K;
-  delete data.gia24K;
+  delete data.gia23K;
   delete data.gia9999;
+  delete data.giatoida;
   delete data.ngayCamChuoc;
   data.tongtrongluong = Number(data.tongtrongluong);
   knex('camdo').insert(data)
@@ -36,6 +38,19 @@ export function updateCamDo(id, data, fn) {
   delete data.gia9999;
   delete data.ngayCamChuoc;
   delete data.songay;
+  delete data.tienlaidukien;
+  delete data.ngaygiahan;
+  knex('camdo')
+  .where('id', '=', id)
+  .update(data)
+  .then(res => fn(res))
+}
+export function giahanCamDo(id, tienlai, songay, fn) {
+  let data = {
+    ngaygiahan: moment().format('x'),
+    ngayhethan: moment().add(songay, 'days').format('x'),
+    tienlai: tienlai
+  };
   knex('camdo')
   .where('id', '=', id)
   .update(data)
