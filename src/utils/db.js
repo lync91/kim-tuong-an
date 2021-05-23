@@ -133,8 +133,13 @@ export function timKiem(text, fn) {
   const dateNumber = moment(text, 'DD/MM/YYYY').format('X').toString().substring(0, 5);
   console.log(dateNumber);
   const camdo = knex('camdo');
-  camdo.whereRaw(`id = '${text}' or sophieu like '%${text}%' or tenkhach like '%${text}%' or ngaycam like '%${dateNumber}%'`)
-  // .orwhere('sophieu', text)
-  // .orwhere('tenkhach', 'LIKE', `%${text}%`)
+  camdo.whereRaw(`id = '${text}' or sophieu like '%${text}%' or tenkhach like '%${text}%' or ngaycam like '%${dateNumber}%' or tudo = '${text}'`)
+  .then(res => fn(res));
+}
+export function timTudo(text, fn) {
+  const dateNumber = moment(text, 'DD/MM/YYYY').format('X').toString().substring(0, 5);
+  console.log(dateNumber);
+  const camdo = knex('camdo');
+  camdo.whereRaw(`tudo = '${text}'`)
   .then(res => fn(res));
 }
