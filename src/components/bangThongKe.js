@@ -22,6 +22,10 @@ const labelRender = (e, c) => {
     text = 'Đã chuộc',
     color = '#108ee9'
   }
+  if (c.dahuy > 0) {
+    text = 'Đã hủy',
+    color = '#f50'
+  }
   return (<Tag color={color} >{text}</Tag>)
 }
 function BangThongKe(props) {
@@ -46,12 +50,14 @@ function BangThongKe(props) {
           <Column title="Thực" dataIndex="trongluongthuc" key="trongluongthuc" />
         </ColumnGroup>
         <Column title="Ngày cầm" dataIndex="ngaycam" key="ngaycam" render={e => e ? moment(e).format('DD/MM/YYYY') : ''} />
+        <Column title="Ngày gia hạn" dataIndex="ngaytinhlai" key="ngayhethan" render={e => e ? moment(e).format('DD/MM/YYYY') : ''} />
         <Column title="Ngày hết hạn" dataIndex="ngayhethan" key="ngayhethan" render={e => e ? moment(e).format('DD/MM/YYYY') : ''} />
         <Column title="Tiền cầm" render={e => `${e}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')} dataIndex="tiencam" key="tiencam" />
         <Column title="Lãi suất" dataIndex="laisuat" key="laisuat" />
         <Column title="Tiền lãi" render={e => e ? `${e}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''} dataIndex="tienlai" key="tienlai" />
         <Column title="Tiền chuộc" render={e => e ? `${e}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''} dataIndex="tienchuoc" key="tienchuoc" />
         <Column title="Ngày chuộc" dataIndex="ngaychuoc" key="ngaychuoc" render={e => e ? moment(e).format('DD/MM/YYYY') : ''} />
+        <Column title="Tủ đồ" dataIndex="tudo" key="tudo" />
         <Column
           title="Tình trạng"
           dataIndex="tags"

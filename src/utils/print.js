@@ -25,19 +25,19 @@ const options = {
 export function printPreview(data, preview) {
   console.log(data);
   const win = new BrowserWindow({
-    show: preview,
+    show: true,
     webPreferences: {
       nodeIntegration: true
     }
   });
 
   const barOptions = {
-    bcid: 'qrcode',       // Barcode type
+    bcid: 'code128',       // Barcode type
     text: data.sophieu,    // Text to encode
-    scale: 1,               // 3x scaling factor
-    // height: 10,              // Bar height, in millimeters
-    includetext: true,            // Show human-readable text
-    textxalign: 'center',        // Always good to set this
+    scale: 2,               // 3x scaling factor
+    height: 20,              // Bar height, in millimeters
+    includetext: false,            // Show human-readable text
+    textxalign: 'center',        // Always good to set this f
   }
 
   bwipjs.toBuffer(barOptions, function (err, png) {
@@ -53,10 +53,10 @@ export function printPreview(data, preview) {
 
       win.loadURL(`data:text/html,${encodeURIComponent(finalHtml)}`);
       if (!preview) win.webContents.on('did-finish-load', () => {
-        win.webContents.print(options, (success, failureReason) => {
-          if (!success) console.log(failureReason);
-          console.log('Print Initiated');
-        });
+        // win.webContents.print(options, (success, failureReason) => {
+        //   if (!success) console.log(failureReason);
+        //   console.log('Print Initiated');
+        // });
       });
     }
   });

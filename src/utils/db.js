@@ -14,7 +14,7 @@ export function insertCamdo(data, fn) {
   db.test(res => console.log(res))
   data.ngaycam = data.ngayCamChuoc[0].format('x');
   data.ngayhethan = data.ngayCamChuoc[1].format('x');
-  data.ngaygiahan = data.ngayCamChuoc[0].format('x');
+  data.ngaytinhlai = data.ngayCamChuoc[0].format('x');
   delete data.size;
   delete data.ngayChuocCam;
   delete data.gia18K;
@@ -27,9 +27,13 @@ export function insertCamdo(data, fn) {
     .then(res => fn(res));
 }
 export function updateCamDo(id, data, fn) {
+
   if (data.ngayCamChuoc) {
     data.ngaycam = moment(data.ngayCamChuoc[0]).format('x');
-    data.ngaychuoc = moment(data.ngayCamChuoc[1]).format('x');
+    data.ngayhethan = moment(data.ngayCamChuoc[1]).format('x');
+  }
+  if (data.ngaychuoc) {
+    data.ngaychuoc = data.ngaychuoc.format('x')
   }
   delete data.size;
   delete data.ngayCamChuoc;
@@ -39,7 +43,10 @@ export function updateCamDo(id, data, fn) {
   delete data.ngayCamChuoc;
   delete data.songay;
   delete data.tienlaidukien;
-  delete data.ngaygiahan;
+  delete data.ngaytinhlai;
+  delete data.tienchuocdukien;
+  delete data.id;
+  delete data.sophieu;
   knex('camdo')
   .where('id', '=', id)
   .update(data)
@@ -47,28 +54,69 @@ export function updateCamDo(id, data, fn) {
 }
 export function giahanCamDo(id, tienlai, songay, fn) {
   let data = {
-    ngaygiahan: moment().format('x'),
+    ngaytinhlai: moment().format('x'),
     ngayhethan: moment().add(songay, 'days').format('x'),
     tienlai: tienlai
   };
   knex('camdo')
   .where('id', '=', id)
   .update(data)
-  .then(res => fn(res))
+  .then(res => fn(res));
+  knex('giahan')
+  .insert({
+    sophieu: id,
+    ngaytinhlai: moment().format('x'),
+    ngayhethan: moment().add(songay, 'days').format('x')
+  })
+  .then((res) => console.log(res));
+}
+export function camThemTien(id, tienlai, tiencam, fn) {
+  let data = {
+    tienlai: tienlai,
+    tiencam: tiencam
+  };
+  // console.log(data);
+  knex('camdo')
+  .where('id', '=', id)
+  .update(data)
+  .then(res => fn(res));
+}
+export function chuocDo(id, tienlai, tienchuoc, ngaychuoc, fn) {
+  let data = {
+    tienlai: tienlai,
+    tienchuoc: tienchuoc,
+    ngaychuoc: ngaychuoc,
+    dachuoc: 1
+  };
+  knex('camdo')
+  .where('id', '=', id)
+  .update(data)
+  .then(res => fn(res));
 }
 export function getCamDo(key, fn) {
-  console.log(key);
   const camdo = knex('camdo').select()
     .orderBy('id', 'desc')
   if (key === 'tatca') camdo.then(res => fn(res));
-  if (key === 'conhan') camdo.whereRaw('ngayhethan > ? and dachuoc <= ?', [moment().format('x'), 0]).then(res => fn(res))
-  if (key === 'quahan') camdo.whereRaw('ngayhethan < ? and dachuoc <= ?', [moment().format('x'), 0]).then(res => fn(res))
-  if (key === 'dachuoc') camdo.whereRaw('dachuoc > ?', [0]).then(res => fn(res))
+  if (key === 'conhan') camdo.whereRaw(
+    'ngayhethan > ? and dachuoc <= ? and dahuy > ?',
+    [moment().format('x'), 0, 0]
+    ).then(res => fn(res))
+  if (key === 'quahan') camdo.whereRaw(
+    'ngayhethan < ? and dachuoc <= ? and dahuy > ?',
+    [moment().format('x'), 0, 0]
+    ).then(res => fn(res))
+  if (key === 'dachuoc') camdo.whereRaw('dachuoc > ? and dahuy > ?', [0, 0]).then(res => fn(res))
 }
 export function deleteCamDo(id, fn) {
   knex('camdo')
   .where('id', id)
   .del()
+  .then(res => fn(res));
+}
+export function huyPhieuCam(id, fn) {
+  knex('camdo')
+  .where('id', id)
+  .update({dahuy: 1})
   .then(res => fn(res));
 }
 export function timPhieu(sophieu, fn) {

@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Barcode from 'react-barcode';
 import { Col, Row } from 'antd';
 
 import docso from '../utils/sorachu';
 import { any } from 'prop-types';
+import moment from 'moment';
 
 function Phieu(props) {
   const { formData, hideCuong } = props;
+  const [ngaytinhlai, setngaytinhlai] = useState('');
+  const [ngaycam, setNgaycam] = useState('')
+  useEffect(() => {
+    console.log(formData.ngaytinhlai);
+    const _ngaytinhlai = formData.ngaytinhlai ? moment(formData.ngaytinhlai).format('DD/MM/YYYY') : '';
+    const _ngaycam = formData.ngayCamChuoc ? formData.ngayCamChuoc[0].format('DD/MM/YYYY').toString() : '';
+    setngaytinhlai(_ngaytinhlai);
+    setNgaycam(_ngaycam);
+    return () => {
+
+    }
+  }, [formData])
   return (
     <Row>
       <Col>
@@ -71,7 +84,10 @@ function Phieu(props) {
                                         Số tiền cầm: <b>{`${formData.tiencam}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b><br />
                                         Viết bằng chữ: <div className="bangchu"><i>{docso(formData.tiencam)} đồng</i></div><br />
                 <Row>
-                  <Col span={12}>Ngày cầm: <b>{formData.ngayCamChuoc ? formData.ngayCamChuoc[0].format('DD/MM/YYYY').toString() : ''}</b></Col>
+                  <Col span={12}>
+                    Ngày cầm: <b>{ngaycam}</b><br />
+                    <p style={{paddingLeft: 85}} hidden={ngaycam === ngaytinhlai ? true : false}><b>({ngaytinhlai})</b></p>
+                  </Col>
                   <Col> Ngày chuộc: <b>{formData.ngayCamChuoc ? formData.ngayCamChuoc[1].format('DD/MM/YYYY').toString() : ''}</b></Col><br />
                 </Row>
                                         Người lập phiếu: <br />
