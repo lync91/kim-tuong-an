@@ -25,7 +25,7 @@ const options = {
 export function printPreview(data, preview) {
   console.log(data);
   const win = new BrowserWindow({
-    show: true,
+    show: preview,
     webPreferences: {
       nodeIntegration: true
     }
@@ -53,10 +53,10 @@ export function printPreview(data, preview) {
 
       win.loadURL(`data:text/html,${encodeURIComponent(finalHtml)}`);
       if (!preview) win.webContents.on('did-finish-load', () => {
-        // win.webContents.print(options, (success, failureReason) => {
-        //   if (!success) console.log(failureReason);
-        //   console.log('Print Initiated');
-        // });
+        win.webContents.print(options, (success, failureReason) => {
+          if (!success) console.log(failureReason);
+          console.log('Print Initiated');
+        });
       });
     }
   });

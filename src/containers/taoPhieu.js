@@ -301,21 +301,21 @@ function TaoPhieu() {
                   <Button type="success" size="large" onClick={() => btnClick('1')} > 1 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('2')} > 2 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('3')} > 3 </Button>
-                  <Button type="warning" size="large" onClick={() => btnClick('L', true)} > L </Button>
+                  <Button type="default" size="large" onClick={() => btnClick('L', true)} > L </Button>
                   <Button type="default" size="large" onClick={() => btnClick('N', true)} > N </Button>
                 </Row>
                 <Row >
                   <Button type="success" size="large" onClick={() => btnClick('4')} > 4 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('5')} > 5 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('6')} > 6 </Button>
-                  <Button type="warning" size="large" onClick={() => btnClick('')} >  </Button>
+                  <Button type="default" size="large" onClick={() => btnClick('K', true)} > K </Button>
                   <Button type="default" size="large" onClick={() => btnClick('V', true)} > V </Button>
                 </Row>
                 <Row >
                   <Button type="success" size="large" onClick={() => btnClick('7')} > 7 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('8')} > 8 </Button>
                   <Button type="success" size="large" onClick={() => btnClick('9')} > 9 </Button>
-                  <Button type="warning" size="large" onClick={() => btnClick('')} >  </Button>
+                  <Button type="default" size="large" onClick={() => btnClick('B', true)} > B </Button>
                   <Button type="default" size="large" onClick={() => btnClick('D', true)} > D </Button>
                 </Row>
                 <Row >
