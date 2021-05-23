@@ -3,6 +3,7 @@ import { Form, Input, Select, DatePicker, Modal, message, Tag, notification, Inp
 import Button from 'antd-button-color';
 const { RangePicker } = DatePicker;
 import moment from 'moment';
+import BarcodeReader from 'react-barcode-reader'
 
 import { SmileOutlined, CloseCircleOutlined, CheckCircleOutlined, SaveOutlined, PrinterOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
@@ -77,6 +78,9 @@ function ChiTiet(props) {
   }
   useEffect(() => {
     console.log(data);
+    inputRef.current.focus({
+      preventScroll: true,
+    });
     const ngayCamChuoc = data.ngaycam ? [
       moment(moment(data.ngaycam).format(dateFormat),
         dateFormat), moment(moment(data.ngayhethan).format(dateFormat), dateFormat)
@@ -274,8 +278,20 @@ function ChiTiet(props) {
   const onKeyPress = (e) => {
     e.code === 'Enter' ? handleOkHuy() : '';
   }
+  const handleScan = (data) => {
+    console.log(data);
+    form.setFieldsValue({sophieu: data});
+    onSearch(data);
+  }
+  const handleError = (err) => {
+    console.error(err)
+  }
   return (
     <div>
+      <BarcodeReader
+          onError={handleError}
+          onScan={handleScan}
+          />
       <Modal title="Xác nhận chuộc đồ"
         visible={modalChuoc}
         onOk={handleOk}
