@@ -22,7 +22,7 @@ function Phieu(props) {
   }, [formData])
   return (
     <Row>
-      <Col>
+      <Col span="24">
         <Row>
           <Col className="phieu-cuong" span="8" hidden={hideCuong}>
             <Row>
@@ -80,9 +80,9 @@ function Phieu(props) {
               <div className="phieu-content">
                 Ông bà: <b>{formData.tenkhach}</b><br />
                                         ĐT: <b>{formData.dienthoai}</b><br />
-                                        Món hàng: <b>{`${formData.monhang} (${formData.loaivang}) - Trọng lượng: ${formData.trongluongthuc}`}</b><br /><br />
+                                        Món hàng: <b>{`${formData.monhang} (${formData.loaivang}) - Trọng lượng: ${formData.trongluongthuc}`}</b><br />
                                         Số tiền cầm: <b>{`${formData.tiencam}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</b><br />
-                                        Viết bằng chữ: <div className="bangchu"><i>{docso(formData.tiencam)} đồng</i></div><br />
+                                        Viết bằng chữ: <div className="bangchu"><i>{docso(formData.tiencam)} đồng</i></div>
                 <Row>
                   <Col span={12}>
                     Ngày cầm: <b>{ngaycam}</b><br />
@@ -91,8 +91,10 @@ function Phieu(props) {
                   <Col> Ngày chuộc: <b>{formData.ngayCamChuoc ? formData.ngayCamChuoc[1].format('DD/MM/YYYY').toString() : ''}</b></Col><br />
                 </Row>
                                         Người lập phiếu: <br />
+                <div hidden>
                 <b>Biên nhận có giá trị trong 30 ngày</b> (Nếu chưa chuộc thì quý khách phải đến đóng lãi mỗi tháng một lần)<br />
                 <b>Sau 30 </b>ngày kể từ ngày cầm mà quý khách không thực hiện đúng nghĩa vụ đóng lãi hoặc chuộc tài sản, coi như quý khác đã tự ý bỏ tài sản, cửa hàng sẽ <b>thanh lý </b>đển đảm bảo nguồn vốn. Mọi thắc mắc và khiếu nại về sau cửa hàng không giải quyết. <b><u>Cửa hàng không giải quyết trường hợp mất giấy.</u></b><br />
+                </div>
               </div>
             </Row>
           </Col>

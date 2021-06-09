@@ -16,8 +16,8 @@ function ThietLap(props) {
   const onKeyChange = () => {
 
   }
-  useEffect(() => {
-    const data = getSync('laisuat');
+  useEffect(async () => {
+    const data = await getSync('laisuat');
     form.setFieldsValue(data ? data : defData);
     return () => {
 

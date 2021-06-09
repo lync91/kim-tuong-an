@@ -76,9 +76,10 @@ export function camThemTien(id, tienlai, tiencam, fn) {
     tiencam: tiencam
   };
   // console.log(data);
+  const newDay = moment().format('x');
   knex('camdo')
   .where('id', '=', id)
-  .update(data)
+  .update({...data, ...{ngaytinhlai: newDay}})
   .then(res => fn(res));
 }
 export function chuocDo(id, tienlai, tienchuoc, ngaychuoc, fn) {

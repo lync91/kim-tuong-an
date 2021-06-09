@@ -59,6 +59,35 @@ const initdb = {
       .then((res) => {
         console.log(res);
       })
+  },
+  createSettings: () => {
+    knex.schema
+    .dropTable('settings')
+    .then(e => {
+      knex.schema
+      .createTable('settings', (table) => {
+        table.increments('id');
+        table.integer('gia18K')
+        table.integer('gia23K')
+        table.integer('gia9999')
+        table.integer('lai10')
+        table.integer('lai20')
+        table.integer('lai30')
+        table.integer('tienToiThieu')
+      }
+      ).then((res) => {
+        knex('settings')
+        .insert({
+          gia18: 2500000,
+          gia23K: 4200000,
+          gia9999: 4500000,
+          lai5: 5,
+          lai15: 4,
+          lai30: 3,
+          tienToiThieu: 5000
+        })
+      })
+    })
   }
 };
 module.exports = initdb;

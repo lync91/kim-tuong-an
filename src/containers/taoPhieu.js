@@ -10,11 +10,13 @@ import {
   Col,
   Tag,
   Drawer,
-  message
+  message,
+  InputNumber
 } from 'antd';
 import Button from 'antd-button-color';
 const { RangePicker } = DatePicker;
 import moment from 'moment';
+import { evaluate, round } from 'mathjs';
 // import { crc16 } from 'js-crc';
 // import { generate } from 'generate-serial-number';
 import { SaveTwoTone, PrinterTwoTone, ProjectOutlined } from '@ant-design/icons';
@@ -44,9 +46,9 @@ const defData = {
   dienthoai: '',
   monhang: '',
   loaivang: '18K',
-  tongtrongluong: '1',
-  trongluonghot: '',
-  trongluongthuc: '',
+  tongtrongluong: '0',
+  trongluonghot: '0',
+  trongluongthuc: '0',
   giatoida: '',
   tiencam: '',
   ngayCamChuoc: [moment(moment().format(dateFormat), dateFormat), moment(moment().add(30, 'days').format(dateFormat), dateFormat)],
@@ -67,11 +69,14 @@ function TaoPhieu() {
   const [visible, setVisible] = useState(false);
 
   const calc = () => {
+    console.log(form.getFieldsValue())
     const gianhap = Number(form.getFieldValue(`gia${form.getFieldValue('loaivang')}`));
     form.setFieldsValue({ gianhap: gianhap });
-    const tongtrongluong = Number(form.getFieldValue('tongtrongluong'));
-    const trongluonghot = Number(form.getFieldValue('trongluonghot'));
-    const trongluongthuc = tongtrongluong - trongluonghot;
+    const tongtrongluong = parseFloat(form.getFieldValue('tongtrongluong'));
+    const trongluonghot = parseFloat(form.getFieldValue('trongluonghot'));
+    console.log(tongtrongluong);
+    console.log(trongluonghot);
+    const trongluongthuc = round(evaluate(`${tongtrongluong} - ${trongluonghot}`), 3);
     const giatoida = Math.round(trongluongthuc * gianhap);
     form.setFieldsValue({ trongluongthuc: trongluongthuc, giatoida: giatoida });
     setFormData({ ...formData, ...form.getFieldsValue() });
@@ -79,22 +84,17 @@ function TaoPhieu() {
   const genKey = () => {
     getLastId((res) => {
       const key = `${padDigits(res + 1, 9)}`;
-      // const ngayCamChuoc = [moment().format(dateFormat), moment().add(30, 'days').format(dateFormat)];
-      // console.log(ngayCamChuoc);
       form.setFieldsValue({ ...defData, ...{ sophieu: key, gianhap: defData.gia18K } });
     });
   };
   useEffect(async () => {
     genKey();
-    console.log(defData);
-    // console.log(await settings.get('giavang'));
     const giavang = await settings.get('giavang');
     console.log(giavang);
     form.setFieldsValue(giavang);
-    setFormData({ ...formData, ...giavang });
-
-    // setFormData({ ...defData, ...{ key: key } });
-    // calc();
+    form.setFieldsValue({ngayCamChuoc: [moment(moment().format(dateFormat), dateFormat), moment(moment().add(30, 'days').format(dateFormat), dateFormat)]})
+    setFormData({ ...formData, ...giavang, ngayCamChuoc: [moment(moment().format(dateFormat), dateFormat), moment(moment().add(30, 'days').format(dateFormat), dateFormat)] });
+    calc();
   }, []);
   const _onValuesChange = (value, vs) => {
     setFormData(vs);
@@ -152,9 +152,20 @@ function TaoPhieu() {
     printPreview(form.getFieldsValue(), false);
   }
   const saveAndPrint = () => {
-    insertCamdo(form.getFieldsValue(), () => {
+    insertCamdo(form.getFieldsValue(), async () => {
       message.success('Thêm thành công phiếu cầm đồ');
       printPreview(form.getFieldsValue(), false);
+      genKey();
+      const giavang = await settings.get('giavang');
+      console.log(giavang);
+      const newNgaycamChuoc = [moment(moment().format(dateFormat), dateFormat), moment(moment().add(30, 'days').format(dateFormat), dateFormat)];
+      form.setFieldsValue(giavang);
+      form.setFieldsValue({ngayCamChuoc: newNgaycamChuoc})
+      setFormData({ ...formData, ...giavang, ngayCamChuoc: newNgaycamChuoc });
+      calc();
+      inputRef.current.focus({
+        cursor: 'all',
+      });
     });
   }
   const testdate = (e, v) => {
@@ -242,7 +253,7 @@ function TaoPhieu() {
                     { display: 'inline-block', width: 'calc(32% - 4px)' }}
                   className={currentInput === 'tongtrongluong' ? 'input-focused' : ''}
                   onClick={() => setCurrentInput('tongtrongluong')} >
-                  <Input placeholder="Tổng" />
+                  <InputNumber placeholder="Tổng" />
                 </Form.Item>
                 <Form.Item name="trongluonghot"
                   rules={
@@ -251,7 +262,7 @@ function TaoPhieu() {
                     { display: 'inline-block', width: 'calc(32% - 4px)', margin: '0 4px' }}
                   className={currentInput === 'trongluonghot' ? 'input-focused' : ''}
                   onClick={() => setCurrentInput('trongluonghot')} >
-                  <Input placeholder="Hột" />
+                  <InputNumber placeholder="Hột" />
                 </Form.Item>
                 <Form.Item name="trongluongthuc"
                   rules={

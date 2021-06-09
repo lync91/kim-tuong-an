@@ -3,7 +3,8 @@ import { Form, Input, Select, DatePicker, Modal, message, Tag, notification, Inp
 import Button from 'antd-button-color';
 const { RangePicker } = DatePicker;
 import moment from 'moment';
-import BarcodeReader from 'react-barcode-reader'
+import BarcodeReader from 'react-barcode-reader';
+import { round } from 'mathjs';
 
 import { SmileOutlined, CloseCircleOutlined, CheckCircleOutlined, SaveOutlined, PrinterOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
@@ -36,9 +37,8 @@ function ChiTiet(props) {
   const [modalGiaHan, setModalGiaHan] = useState(false)
   const [currentInput, setCurrentInput] = useState('');
   const [inputXacNhan, setInputXacNhan] = useState('');
-  const [dataLaiSuat, setDataLaiSuat] = useState(defData);
+  const [dataLaiSuat, setDataLaiSuat] = useState({});
   const [modalCamThem, setModalCamThem] = useState(false);
-  // const [tienCamThem, setTienCamThem] = useState(0);
   const inputRef = React.useRef(null);
   const calc = () => {
     const ngayCamChuoc = form.getFieldValue('ngayCamChuoc');
@@ -48,7 +48,7 @@ function ChiTiet(props) {
     const trongluongthuc = tongtrongluong - trongluonghot;
     const tiencam = form.getFieldValue('tiencam') ? form.getFieldValue('tiencam') : Math.round(trongluongthuc * gianhap);
     let laisuat = Number(form.getFieldValue('laisuat'));
-    const songay = ngayCamChuoc ? Math.round((moment().format('x') - moment(data.ngaytinhlai ? data.ngaytinhlai : data.ngaycam).format('x')) / (1000 * 60 * 60 * 24)) : '';
+    const songay = ngayCamChuoc ? Math.round((moment().format('x') - moment(data.ngaytinhlai ? data.ngaytinhlai : data.ngaycam).format('x')) / (1000 * 60 * 60 * 24) + 1) : '';
     if (songay < 10) {
       laisuat = dataLaiSuat.lai10
     } else if (songay > 10 && songay <20) {
@@ -76,7 +76,7 @@ function ChiTiet(props) {
     // form.setFieldsValue(res[0]);
     return { ...res, ...{ ngayCamChuoc: ngayCamChuoc, ngaychuoc: ngaychuoc } };
   }
-  useEffect(() => {
+  useEffect(async () => {
     console.log(data);
     inputRef.current.focus({
       preventScroll: true,
@@ -87,7 +87,7 @@ function ChiTiet(props) {
     ] : '';
     const ngaychuoc = data.ngaychuoc ? moment(moment(data.ngaychuoc).format(dateFormat), dateFormat) : '';
     const ngaytinhlai = data.ngaytinhlai ? moment(moment(data.ngaytinhlai).format(dateFormat), dateFormat) : '';
-    const stLaiSuat = getSync('laisuat');
+    const stLaiSuat = await getSync('laisuat');
     setDataLaiSuat(stLaiSuat ? stLaiSuat : defData);
     console.log('ngaychuoc', ngaychuoc);
     setFormData(data);
