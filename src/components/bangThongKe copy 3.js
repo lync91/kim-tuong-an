@@ -146,23 +146,23 @@ function DefaultColumnFilter({
 //   // return row[filter.id] < 21;
 //   console.log('OK');
 // }
-
-function trongLuonFilter(props) {
-  const {
-    column: { filterValue = [], preFilteredRows, setFilter, id },
-  } = props;
-  const options = ['All']
-  const [min, max] = React.useMemo(() => {
-    let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0
-    let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0
-    preFilteredRows.forEach(row => {
-      min = Math.min(row.values[id], min)
-      max = Math.max(row.values[id], max)
-    })
-    return [min, max]
-  }, [id, preFilteredRows])
-  // attach the onChange method from props's object to element
-  return <Input size="small" onChange={(e) => setFilter((old = []) => [1, 3])} />
+function trongLuongFilter({
+  column: { filterValue, preFilteredRows, setFilter, width },
+}) {
+  const onChange = (val) => {
+    console.log(filterValue);
+  }
+  return (
+    <select
+      onChange={event => onChange(event.target.value)}
+      style={{ width: "100%" }}
+      value={"all"}
+    >
+      <option value="all">Show All</option>
+      <option value="true">Can Drink</option>
+      <option value="false">Can't Drink</option>
+    </select>
+  )
 }
 
 // This is a custom filter UI for selecting
@@ -480,19 +480,6 @@ function filterGreaterThan(rows, id, filterValue) {
 }
 
 
-function filterTrongLuong(rows, id, filterValue) {
-  console.log(filterValue);
-  return rows.filter(row => {
-    const rowValue = row.values[id]
-    if (rowValue >= filterValue[0] && rowValue <= filterValue[1]) {
-      return row;
-    }
-  })
-}
-
-
-
-
 // This is an autoRemove method on the filter function that
 // when given the new filter value and returns true, the filter
 // will be automatically removed. Normally this is just an undefined
@@ -531,8 +518,7 @@ function BangThongKe(props) {
       {
         Header: 'Tổng',
         accessor: 'tongtrongluong',
-        Filter: trongLuonFilter,
-        filter: filterTrongLuong,
+        Filter: trongLuongFilter,
         width: 80,
       },
       {
@@ -612,7 +598,7 @@ function BangThongKe(props) {
   return (
     <Styles>
       <Table filterable defaultFilterMethod={(filter, row) =>
-        String(row[filter.id]) === filter.value} columns={columns} data={data} />
+            String(row[filter.id]) === filter.value} columns={columns} data={data} />
     </Styles>
   )
 }

@@ -2,6 +2,7 @@ import { remote } from 'electron';
 import moment from 'moment';
 const knex = remote.require('./db/connect');
 const db = remote.require('./db');
+import { round } from 'mathjs';
 
 export function getLastId(fn) {
   knex('camdo').max({ a: 'id' })
@@ -97,16 +98,20 @@ export function chuocDo(id, tienlai, tienchuoc, ngaychuoc, fn) {
 export function getCamDo(key, fn) {
   const camdo = knex('camdo').select()
     .orderBy('id', 'desc')
-  if (key === 'tatca') camdo.then(res => fn(res.map((v) => {
-    v.ngaycam = moment(v.ngaycam).format('DD/MM/YYYY');
-    v.ngaytinhlai = moment(v.ngaytinhlai).format('DD/MM/YYYY')
-    v.ngayhethan = moment(v.ngayhethan).format('DD/MM/YYYY');
-    v.ngaychuoc = v.ngaychuoc ? moment(v.ngaychuoc).format('DD/MM/YYYY') : '';
-    v.tiencam = v.tiencam ? `${v.tiencam}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
-    v.tienlai = v.tienlai ? `${v.tienlai}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
-    v.tienchuoc = v.tienchuoc ? `${v.tienchuoc}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
-    return v
-  })));
+  if (key === 'tatca') camdo
+  // .then(res => fn(res.map((v) => {
+  //   v.ngaycam = moment(v.ngaycam).format('DD/MM/YYYY');
+  //   v.ngaytinhlai = moment(v.ngaytinhlai).format('DD/MM/YYYY')
+  //   v.ngayhethan = moment(v.ngayhethan).format('DD/MM/YYYY');
+  //   v.ngaychuoc = v.ngaychuoc ? moment(v.ngaychuoc).format('DD/MM/YYYY') : '';
+  //   v.tiencam = v.tiencam ? `${v.tiencam}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+  //   v.tienlai = v.tienlai ? `${v.tienlai}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+  //   v.tienchuoc = v.tienchuoc ? `${v.tienchuoc}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+  //   v.trangthai = v.dachuoc > 0 ? 'Đã chuôc' : 'Chưa chuộc';
+  //   v.trongluongthuc = v.trongluongthuc ? round(v.trongluongthuc, 3) : ''
+  //   return v
+  // })));
+  .then(res => fn(res))
   if (key === 'conhan') camdo.whereRaw(
     'ngayhethan > ? and dachuoc <= ? and dahuy > ?',
     [moment().format('x'), 0, 0]

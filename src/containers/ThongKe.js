@@ -66,7 +66,7 @@ function ThongKe() {
       >
         <ChiTiet data={curRow} close={onClose} quetphieu={false} onSearched={onSearched} />
       </Drawer>
-      <PageHeader className="site-page-header"
+      {/* <PageHeader className="site-page-header"
         onBack={
           () => null}
         title="Quản lý dữ liệu"
@@ -92,8 +92,8 @@ function ThongKe() {
             </Form.Item>
           </Form>
           )}
-      />
-      <Layout style={{ padding: 5 }}>
+      /> */}
+      <Layout className="layout-thongke" style={{ padding: 5 }}>
         <BangThongKe data={table} onSelectRow={_selectRow} />
       </Layout>
     </div>
