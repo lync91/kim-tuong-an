@@ -341,10 +341,48 @@ tbody tr:hover {
   padding-right: 17px !important;
   background-color: #d7e6f3;
 }
+.table .tft {
+  padding-right: 17px !important;
+  background-color: #f3e5d7;
+}
+.table .tft .th {
+  font-weight: 700;
+}
 .table .th {
   display: block !important;
   font-weight: 600;
   text-align: center;
+  padding: 5px 0 0 0 !important;
+}
+.table .th input {
+  font-size: 9pt;
+}
+.table .th .ant-input-suffix, span {
+  margin: 0 !important;
+}
+.table .th .ant-input-clear-icon {
+  margin: 0 !important;
+}
+.table .th span, .ant-picker {
+  margin-top: 5px !important;
+}
+.table .th .ant-picker {
+  margin-top: 5px !important;
+  font-size: 5pt;
+}
+.table .th .ant-picker-range-separator {
+  overflow-y: hidden;
+  width: 1px;
+}
+.table .th .ant-picker-range input {
+  overflow-y: hidden;
+  font-size: 7pt;
+}
+.table .th .ant-picker-range .ant-picker-clear {
+  overflow-y: hidden;
+  font-size: 9pt;
+  top: 3px;
+  right: 2px;
 }
 .table .tr:hover {
   color: #555;
@@ -358,6 +396,7 @@ tbody tr:hover {
 
 .layout-thongke div {
   padding: 0;
+  overflow-x: hidden;
 }
 
 .styled-select {
@@ -370,4 +409,9 @@ tbody tr:hover {
   border-radius: 0;
   height: 34px;
   -webkit-appearance: none;
+  }
+
+  .dateFilter {
+    overflow-y: hidden;
+    /* font-size: 5pt; */
   }

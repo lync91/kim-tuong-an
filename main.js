@@ -36,11 +36,12 @@ function createWindow() {
     width: 1920,
     height: 1080,
     show: false,
+    titleBarStyle: 'hidden',
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true
-    }
+    },
   })
 
   // and load the index.html of the app.
@@ -62,7 +63,7 @@ function createWindow() {
   }
 
   mainWindow.loadURL(indexPath)
-
+  mainWindow.setMenuBarVisibility(false)
   // Don't show until we are ready and loaded
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()

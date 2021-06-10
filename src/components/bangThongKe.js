@@ -3,9 +3,11 @@ import styled from 'styled-components'
 import { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useFlexLayout, useRowSelect, useResizeColumns, usePagination } from 'react-table'
 // A great library for fuzzy filtering/sorting items
 // import matchSorter from 'match-sorter'
-import { Input, Button, Select } from 'antd';
+import { Input, Button, Select, DatePicker } from 'antd';
+const { RangePicker } = DatePicker;
+const dateFormat = 'DD/MM/YYYY';
 import moment from 'moment';
-import { round } from 'mathjs';
+import { round, evaluate } from 'mathjs';
 const Styles = styled.div`
 padding: 1rem;
 ${'' /* These styles are suggested for the table fill all available space in its containing element */}
@@ -27,7 +29,7 @@ overflow: auto;
     ${'' /* These styles are required for a scrollable table body */}
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 850px;
+    height: 860px;
   }
 
   .tr {
@@ -124,7 +126,7 @@ function DefaultColumnFilter({
 }) {
   const count = preFilteredRows.length
   return (
-    <Input
+    <Input allowClear
       size="small"
       // style={{ width: width - 4 }}
       value={filterValue || ''}
@@ -147,23 +149,7 @@ function DefaultColumnFilter({
 //   console.log('OK');
 // }
 
-function trongLuonFilter(props) {
-  const {
-    column: { filterValue = [], preFilteredRows, setFilter, id },
-  } = props;
-  const options = ['All']
-  const [min, max] = React.useMemo(() => {
-    let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0
-    let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0
-    preFilteredRows.forEach(row => {
-      min = Math.min(row.values[id], min)
-      max = Math.max(row.values[id], max)
-    })
-    return [min, max]
-  }, [id, preFilteredRows])
-  // attach the onChange method from props's object to element
-  return <Input size="small" onChange={(e) => setFilter((old = []) => [1, 3])} />
-}
+
 
 // This is a custom filter UI for selecting
 // a unique option from a list
@@ -292,7 +278,7 @@ function roundCell({ value }) {
   return value ? round(value, 3) : ''
 }
 
-function Table({ columns, data }) {
+function Table({ columns, data, onRowClicked }) {
   const filterTypes = React.useMemo(
     () => ({
       // Add a new fuzzyTextFilterFn filter type.
@@ -346,6 +332,7 @@ function Table({ columns, data }) {
     nextPage,
     previousPage,
     setPageSize,
+    footerGroups,
     state: { pageIndex, pageSize },
   } = useTable(
     {
@@ -353,7 +340,7 @@ function Table({ columns, data }) {
       data,
       defaultColumn, // Be sure to pass the defaultColumn option
       filterTypes,
-      initialState: { pageIndex: 0, pageSize: 50 },
+      initialState: { pageIndex: 0, pageSize: 30 },
     },
     useFilters, // useFilters!
     useGlobalFilter, // useGlobalFilter!
@@ -366,7 +353,6 @@ function Table({ columns, data }) {
   // We don't want to render all of the rows for this example, so cap
   // it for this use case
   // const firstPageRows = rows.slice(10)
-
   return (
     <div style={{ padding: 0 }}>
       <div {...getTableProps()} className="table">
@@ -397,30 +383,25 @@ function Table({ columns, data }) {
           ))}
         </div>
         <div className="tbody">
-          {/* {rows.map(row => {
-          prepareRow(row)
-          return (
-            <div {...row.getRowProps()} className="tr">
-              {row.cells.map(cell => {
-                return (
-                  <div {...cell.getCellProps(cellProps)} className="td">
-                    {cell.render('Cell')}
-                  </div>
-                )
-              })}
-            </div>
-          )
-        })} */}
           {page.map((row, i) => {
             prepareRow(row)
             return (
-              <div {...row.getRowProps()} className="tr">
+              <div {...row.getRowProps()} className="tr" onClick={() => onRowClicked(row.values)}>
                 {row.cells.map(cell => {
                   return <div {...cell.getCellProps()} className="td">{cell.render('Cell')}</div>
                 })}
               </div>
             )
           })}
+        </div>
+        <div>
+          {footerGroups.map(group => (
+            <div {...group.getFooterGroupProps()} className="tr tft">
+              {group.headers.map(column => (
+                <div {...column.getFooterProps()} className="th">{column.render('Footer')}</div>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
       <div className="pagination">
@@ -479,15 +460,82 @@ function filterGreaterThan(rows, id, filterValue) {
   })
 }
 
+function dateRangFilter(props) {
+  const {
+    column: { filterValue = [], preFilteredRows, setFilter, id },
+  } = props;
+  // attach the onChange method from props's object to element
+  const count = preFilteredRows.length;
+  return (
+    <RangePicker size="small" className="dateFilter"
+      format={dateFormat}
+    />
+  )
+}
+
+function trongLuonFilter(props) {
+  const {
+    column: { filterValue = [], preFilteredRows, setFilter, id },
+  } = props;
+  // attach the onChange method from props's object to element
+  const count = preFilteredRows.length;
+  return (
+    <Input allowClear
+      size="small"
+      // style={{ width: width - 4 }}
+      value={filterValue || ''}
+      onChange={e => {
+        setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
+      }}
+      placeholder={`Tìm ${count} phiếu...`}
+    />
+  )
+}
+
 
 function filterTrongLuong(rows, id, filterValue) {
-  console.log(filterValue);
-  return rows.filter(row => {
-    const rowValue = row.values[id]
-    if (rowValue >= filterValue[0] && rowValue <= filterValue[1]) {
-      return row;
-    }
-  })
+  const mtxt = /\<[\d]{1,99}([.]\d{1,99})?/g.test(filterValue);
+  if (mtxt) {
+    const num = `${filterValue}`.match(/[\d]{1,99}([.]\d{1,99})?/g)[0]
+    return rows.filter(row => {
+      const rowValue = row.values[id]
+      return rowValue < num
+    })
+  } else if (/\<=[\d]{1,99}([.]\d{1,99})?/g.test(filterValue)) {
+    const num = `${filterValue}`.match(/[\d]{1,99}([.]\d{1,99})?/g)[0]
+    return rows.filter(row => {
+      const rowValue = row.values[id]
+      return rowValue <= num
+    })
+  } else if (/\>[\d]{1,99}([.]\d{1,99})?/g.test(filterValue)) {
+    const num = `${filterValue}`.match(/[\d]{1,99}([.]\d{1,99})?/g)[0]
+    return rows.filter(row => {
+      const rowValue = row.values[id]
+      return rowValue > num
+    })
+  } else if (/\>=[\d]{1,99}([.]\d{1,99})?/g.test(filterValue)) {
+    const num = `${filterValue}`.match(/[\d]{1,99}([.]\d{1,99})?/g)[0]
+    return rows.filter(row => {
+      const rowValue = row.values[id]
+      return rowValue >= num
+    })
+  } else if (/[\d]{1,99}([.]\d{1,99})?\-[\d]{1,99}([.]\d{1,99})?/g.test(filterValue)) {
+    const num1 = `${filterValue}`.match(/[\d]{1,99}([.]\d{1,99})?/g)[0]
+    const num2 = `${filterValue}`.match(/[\d]{1,99}([.]\d{1,99})?/g)[1]
+    return rows.filter(row => {
+      const rowValue = row.values[id]
+      if (rowValue > num1 && rowValue < num2) {
+        return row
+      }
+    })
+  }
+  else {
+    return rows.filter(row => {
+      const rowValue = row.values[id]
+      return rowValue === Number(filterValue)
+    })
+  }
+
 }
 
 
@@ -538,11 +586,15 @@ function BangThongKe(props) {
       {
         Header: 'Hột',
         accessor: 'trongluonghot',
+        Filter: trongLuonFilter,
+        filter: filterTrongLuong,
         width: 80
       },
       {
         Header: 'Thực',
         accessor: 'trongluongthuc',
+        Filter: trongLuonFilter,
+        filter: filterTrongLuong,
         Cell: roundCell,
         width: 80
       },
@@ -550,6 +602,7 @@ function BangThongKe(props) {
         Header: 'Ngày cầm',
         accessor: 'ngaycam',
         Cell: dateHourCell,
+        Filter: dateRangFilter,
         width: 110
       },
       {
@@ -568,6 +621,16 @@ function BangThongKe(props) {
         Header: 'Tiền cầm',
         accessor: 'tiencam',
         Cell: tienCell,
+        Footer: info => {
+          // Only calculate total visits if rows change
+          const total = React.useMemo(
+            () =>
+              info.rows.reduce((sum, row) => row.values.tiencam ? Number(row.values.tiencam | 0) + sum : sum, 0),
+            [info.rows]
+          )
+
+          return <>{`${total}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</>
+        },
         width: 100
       },
       {
@@ -579,13 +642,34 @@ function BangThongKe(props) {
         Header: 'Tiền lãi',
         accessor: 'tienlai',
         Cell: tienCell,
+        Footer: info => {
+          // Only calculate total visits if rows change
+          const total = React.useMemo(
+            () =>
+              info.rows.reduce((sum, row) => row.values.tienlai ? Number(row.values.tienlai | 0) + sum : sum, 0),
+            [info.rows]
+          )
+
+          return <>{`${total}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</>
+        },
         width: 100
       },
       {
         Header: 'Tiền chuộc',
         accessor: 'tienchuoc',
         Cell: tienCell,
-        width: 100
+        width: 100,
+        Footer: info => {
+          // Only calculate total visits if rows change
+          console.log(info);
+          const total = React.useMemo(
+            () =>
+              info.rows.reduce((sum, row) => row.values.tienchuoc ? Number(row.values.tienchuoc | 0) + sum : sum, 0),
+            [info.rows]
+          )
+
+          return <>{`${total}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</>
+        },
       },
       {
         Header: 'Ngày chuộc',
@@ -607,11 +691,11 @@ function BangThongKe(props) {
     []
   )
 
-  const { data } = props
+  const { data, onSelectRow } = props
 
   return (
     <Styles>
-      <Table filterable defaultFilterMethod={(filter, row) =>
+      <Table onRowClicked={(row) => onSelectRow(row)} filterable defaultFilterMethod={(filter, row) =>
         String(row[filter.id]) === filter.value} columns={columns} data={data} />
     </Styles>
   )

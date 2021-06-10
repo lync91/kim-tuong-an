@@ -31,6 +31,7 @@ function ThongKe() {
     getCamDo(e.key, (res) => updateTable(res));
   }
   const _selectRow = async (r) => {
+    console.log('r', r);
     await setCurRow(r);
     setVisible(true);
   }
