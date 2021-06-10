@@ -32,9 +32,6 @@ function GiaVang(props) {
             <Form.Item name="gia9999" label="9999" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="laisuat" label="Lãi suất" rules={[{ required: true }]}>
-                <Input />
-            </Form.Item>
             <Form.Item wrapperCol={{ offset: 16, span: 8 }}>
                 <Button type="primary" htmlType="submit" onClick={_Click} >Lưu</Button>
             </Form.Item>

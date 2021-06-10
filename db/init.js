@@ -1,3 +1,4 @@
+const { fn } = require('moment');
 const knex = require('./connect');
 const initdb = {
   createTable: () => {
@@ -60,34 +61,49 @@ const initdb = {
         console.log(res);
       })
   },
+  dropTable: (table) => {
+    const prom = new Promise((res, rej) => {
+      knex.schema.dropTable(table)
+        .then((r) => {
+          res(r)
+        })
+        .catch(e => rej(e))
+    })
+    return prom
+  },
   createSettings: () => {
-    knex.schema
-    .dropTable('settings')
-    .then(e => {
+    const a = new Promise((res, rej) => {
       knex.schema
-      .createTable('settings', (table) => {
-        table.increments('id');
-        table.integer('gia18K')
-        table.integer('gia23K')
-        table.integer('gia9999')
-        table.integer('lai10')
-        table.integer('lai20')
-        table.integer('lai30')
-        table.integer('tienToiThieu')
-      }
-      ).then((res) => {
-        knex('settings')
+        .createTable('settings', (table) => {
+          table.increments('id');
+          table.integer('gia18K')
+          table.integer('gia23K')
+          table.integer('gia9999')
+          table.integer('lai10')
+          table.integer('lai20')
+          table.integer('lai30')
+          table.integer('tienToiThieu')
+        }).then(r => res(r))
+        .catch(e => rej(e))
+    })
+    return a;
+  },
+  createSettingsDetails: () => {
+    const a = new Promise((res, rej) => {
+      knex('settings')
         .insert({
-          gia18: 2500000,
+          gia18K: 2500000,
           gia23K: 4200000,
           gia9999: 4500000,
-          lai5: 5,
-          lai15: 4,
+          lai10: 5,
+          lai20: 4,
           lai30: 3,
           tienToiThieu: 5000
         })
-      })
+        .then(r => res(r))
+        .catch(e => rej(e))
     })
+    return a;
   }
 };
 module.exports = initdb;

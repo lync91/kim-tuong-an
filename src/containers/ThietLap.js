@@ -2,23 +2,15 @@ import React, { useEffect } from 'react';
 import { PageHeader, Form, Row, Col, Input, message } from 'antd';
 import Button from 'antd-button-color';
 import { resetData } from '../utils/init';
-import { setSync, getSync, set } from 'electron-settings';
+import { createSettings, getSettings, setSettings } from '../utils/db';
 
-const defData = {
-  lai10: 5,
-  lai20: 4,
-  lai30: 3,
-  tienToiThieu: 5000
-}
-
-function ThietLap(props) {
+function ThietLap() {
   const [form] = Form.useForm();
-  const onKeyChange = () => {
-
-  }
   useEffect(async () => {
-    const data = await getSync('laisuat');
-    form.setFieldsValue(data ? data : defData);
+    getSettings()
+    .then(res => {
+      form.setFieldsValue(res)
+    })
     return () => {
 
     }
@@ -30,8 +22,12 @@ function ThietLap(props) {
   }
   const onSaveClick = () => {
     const values = form.getFieldsValue();
-    set('laisuat', values)
+    setSettings(values).then(res => console.log(res));
     message.success('Cập nhật cài đặt thành công');
+  }
+  const onClickcreateSettings = () => {
+    // console.log('OK');
+    createSettings();
   }
   return (
     <div>
@@ -72,6 +68,9 @@ function ThietLap(props) {
             </Form.Item>
             <Form.Item hidden label="" name='resetData'>
               <Button onClick={onClickresetData}>Xóa dữ liệu</Button>
+            </Form.Item>
+            <Form.Item label="Khác" name='createThietLap'>
+              <Button onClick={onClickcreateSettings}>Tạo lại dữ liệu thiết lập</Button>
             </Form.Item>
           </Form>
         </Col>

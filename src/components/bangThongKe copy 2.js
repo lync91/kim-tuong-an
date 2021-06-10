@@ -3,14 +3,14 @@ import styled from 'styled-components'
 import { useTable, useFilters, useGlobalFilter, useAsyncDebounce } from 'react-table'
 // A great library for fuzzy filtering/sorting items
 import matchSorter from 'match-sorter'
-import { Input } from 'antd';
+
 const Styles = styled.div`
   padding: 0.5rem;
 
   table {
     display: inline-block;
     border-spacing: 0;
-    border: 1px solid #bfbfbf;
+    border: 1px solid black;
 
     tr {
       :last-child {
@@ -24,8 +24,8 @@ const Styles = styled.div`
     td {
       margin: 0;
       padding: 0.3rem;
-      border-bottom: 1px solid #bfbfbf;;
-      border-right: 1px solid #bfbfbf;;
+      border-bottom: 1px solid black;
+      border-right: 1px solid black;
 
       :last-child {
         border-right: 0;
@@ -48,16 +48,16 @@ function GlobalFilter({
 
   return (
     <span>
-      Tìm kiếm chung:{' '}
+      Search:{' '}
       <input
         value={value || ""}
         onChange={e => {
           setValue(e.target.value);
           onChange(e.target.value);
         }}
-        placeholder={`${count} kết quả...`}
+        placeholder={`${count} records...`}
         style={{
-          fontSize: '1rem',
+          fontSize: '1.1rem',
           border: '0',
         }}
       />
@@ -72,8 +72,7 @@ function DefaultColumnFilter({
   const count = preFilteredRows.length
   console.log(width);
   return (
-    <Input
-    size="small"
+    <input
       style={{width: width - 4}}
       value={filterValue || ''}
       onChange={e => {
@@ -341,7 +340,7 @@ function BangThongKe(props) {
       {
         Header: 'id',
         accessor: 'id',
-        width: 45
+        width: 20
       },
       {
         Header: 'Số phiếu',
@@ -381,7 +380,7 @@ function BangThongKe(props) {
       {
         Header: 'Ngày cầm',
         accessor: 'ngaycam',
-        width: 90
+        width: 80
       },
       {
         Header: 'Ngày tính lãi',
@@ -391,7 +390,7 @@ function BangThongKe(props) {
       {
         Header: 'Ngày hết hạn',
         accessor: 'ngayhethan',
-        width: 90
+        width: 85
       },
       {
         Header: 'Tiền cầm',
@@ -406,17 +405,17 @@ function BangThongKe(props) {
       {
         Header: 'Tiền lãi',
         accessor: 'tienlai',
-        width: 85
+        width: 60
       },
       {
         Header: 'Tiền chuộc',
         accessor: 'tienchuoc',
-        width: 85
+        width: 80
       },
       {
         Header: 'Ngày chuộc',
         accessor: 'ngaychuoc',
-        width: 85
+        width: 80
       },
       {
         Header: 'Tủ đồ',

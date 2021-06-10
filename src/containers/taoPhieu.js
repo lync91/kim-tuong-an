@@ -21,7 +21,7 @@ import { evaluate, round } from 'mathjs';
 // import { generate } from 'generate-serial-number';
 import { SaveTwoTone, PrinterTwoTone, ProjectOutlined } from '@ant-design/icons';
 import Keyboard from 'react-simple-keyboard';
-import settings from 'electron-settings';
+import { getSettings, setSettings } from '../utils/db';
 import {
   getLastId,
   insertCamdo,
@@ -89,12 +89,13 @@ function TaoPhieu() {
   };
   useEffect(async () => {
     genKey();
-    const giavang = await settings.get('giavang');
-    console.log(giavang);
-    form.setFieldsValue(giavang);
-    form.setFieldsValue({ngayCamChuoc: [moment(moment().format(dateFormat), dateFormat), moment(moment().add(30, 'days').format(dateFormat), dateFormat)]})
-    setFormData({ ...formData, ...giavang, ngayCamChuoc: [moment(moment().format(dateFormat), dateFormat), moment(moment().add(30, 'days').format(dateFormat), dateFormat)] });
-    calc();
+    getSettings()
+      .then(res => {
+        form.setFieldsValue(res)
+        form.setFieldsValue({ ngayCamChuoc: [moment(moment().format(dateFormat), dateFormat), moment(moment().add(30, 'days').format(dateFormat), dateFormat)] })
+        setFormData({ ...formData, ...res, ngayCamChuoc: [moment(moment().format(dateFormat), dateFormat), moment(moment().add(30, 'days').format(dateFormat), dateFormat)] });
+        calc();
+      })
   }, []);
   const _onValuesChange = (value, vs) => {
     setFormData(vs);
@@ -123,12 +124,14 @@ function TaoPhieu() {
   };
   const onGiaUpdate = (data) => {
     form.setFieldsValue(data);
-    settings.set({ giavang: data });
-    setFormData({ ...formData, ...{ gia18K: Number(data.gia18K) } });
-    const tmp = form.getFieldValue('loaivang');
-    console.log(tmp);
-    calc();
-    onClose();
+    setSettings(data).then(res => {
+      console.log(res);
+      setFormData({ ...formData, ...{ gia18K: Number(data.gia18K) } });
+      const tmp = form.getFieldValue('loaivang');
+      console.log(tmp);
+      calc();
+      onClose();
+    })
   };
   const _selectGia = (e) => {
     switch (e) {
@@ -160,7 +163,7 @@ function TaoPhieu() {
       console.log(giavang);
       const newNgaycamChuoc = [moment(moment().format(dateFormat), dateFormat), moment(moment().add(30, 'days').format(dateFormat), dateFormat)];
       form.setFieldsValue(giavang);
-      form.setFieldsValue({ngayCamChuoc: newNgaycamChuoc})
+      form.setFieldsValue({ ngayCamChuoc: newNgaycamChuoc })
       setFormData({ ...formData, ...giavang, ngayCamChuoc: newNgaycamChuoc });
       calc();
       inputRef.current.focus({

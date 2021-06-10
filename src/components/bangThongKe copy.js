@@ -70,7 +70,7 @@ function BangThongKe(props) {
         <Column title="Lãi suất" dataIndex="laisuat" key="laisuat" />
         <Column title="Tiền lãi" render={e => e ? `${e}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''} dataIndex="tienlai" key="tienlai" />
         <Column title="Tiền chuộc" render={e => e ? `${e}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''} dataIndex="tienchuoc" key="tienchuoc" />
-        <Column title="Ngày chuộc" dataIndex="ngaychuoc" key="ngaychuoc" render={e => e ? moment(e).format('DD/MM/YYYY') : ''} />
+        <Column title="Ngày chuộc" dataIndex="ngaychuoc" key="ngaychuoc" render={e => e ? moment(e).format('DD/MM/YYYY hh:mm a') : ''} />
         <Column title="Tủ đồ" dataIndex="tudo" key="tudo" />
         <Column
           title="Tình trạng"
@@ -91,5 +91,5 @@ function BangThongKe(props) {
     </div>
   );
 }
-BangThongKe.propTypes = any
+BangThongKe.propTypes = any;
 export default BangThongKe;
