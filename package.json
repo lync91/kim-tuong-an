@@ -29,24 +29,12 @@
     "last 4 versions"
   ],
   "main": "main.js",
-  "build": {
-    "win": {
-      "icon": "./src/assets/icon.ico"
-    },
-    "extraResources": [
-      {
-        "from": "./data/",
-        "to": "data",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ]
-  },
   "scripts": {
     "prod": "cross-env NODE_ENV=production webpack --mode production --config webpack.build.config.js && electron --noDevServer .",
     "start": "cross-env NODE_ENV=development webpack serve --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
     "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
+    "builder": "electron-builder",
+    "compile": "electron-webpack",
     "package": "npm run build",
     "postpackage": "electron-packager ./ --out=./builds --overwrite"
   },
@@ -89,6 +77,7 @@
     "electron": "^12.0.0",
     "electron-devtools-installer": "^3.1.1",
     "electron-packager": "^15.2.0",
+    "electron-builder": "^22.10.5",
     "eslint": "^7.26.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-react": "^7.23.2",
@@ -103,6 +92,7 @@
     "style-loader": "^2.0.0",
     "webpack": "^5.24.4",
     "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^3.11.2",
+    "electron-webpack": "^2.8.2"
   }
 }
