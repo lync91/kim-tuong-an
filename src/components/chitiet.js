@@ -48,7 +48,7 @@ function ChiTiet(props) {
     const trongluonghot = form.getFieldValue('trongluonghot');
     const trongluongthuc = round(evaluate(`${tongtrongluong} - ${trongluonghot}`), 3);
     console.log(trongluongthuc);
-    // const tiencam = form.getFieldValue('tiencam') ? form.getFieldValue('tiencam') : round(trongluongthuc * gianhap);
+    const tiencam = form.getFieldValue('tiencam') ? form.getFieldValue('tiencam') : round(trongluongthuc * gianhap);
     let laisuat = Number(form.getFieldValue('laisuat'));
     const songay = ngayCamChuoc ? round((moment().format('x') - moment(data.ngaytinhlai ? data.ngaytinhlai : data.ngaycam).format('x')) / (1000 * 60 * 60 * 24) + 1) : '';
     if (songay < 10) {

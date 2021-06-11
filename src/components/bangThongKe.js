@@ -537,7 +537,7 @@ function trangThaiFilter(props) {
 
 function filterTrangThai(rows, id, filterValue) {
   console.log(filterValue);
-  if (filterValue === 'all') return rows;
+  if (filterValue === 'Tất cả') return rows;
   if (filterValue === 'Đã chuộc') {
     return rows.filter(row => {
       console.log(row.values['ngaychuoc']);
