@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PageHeader, Layout, Radio, Form, Drawer, Input, Switch } from 'antd';
 // import { SaveTwoTone, PrinterTwoTone, ProjectOutlined } from '@ant-design/icons';
 import BangThongKe from '../components/bangThongKe';
-import { getCamDo, timKiem, timTudo } from '../utils/db';
+import { getCamDo, timKiem, timTudo, timPhieubyID } from '../utils/db';
 import ChiTiet from '../components/chitiet';
 
 
@@ -31,13 +31,17 @@ function ThongKe() {
     getCamDo(e.key, (res) => updateTable(res));
   }
   const _selectRow = async (r) => {
-    console.log('r', r);
     await setCurRow(r);
     setVisible(true);
   }
   const onClose = (reload) => {
-    console.log(reload);
-    if (reload) getData(curKey);
+    // console.log(reload);
+    // if (reload) getData(curKey);
+    timPhieubyID(curRow.id, (res) => {
+      // console.log(res);
+      // updateTable(table.forEach(e => e.id === res[0].id ? res[0] : e))
+      setCurKey(res)
+    })
     setVisible(false);
   };
   const onSearch = (e) => {

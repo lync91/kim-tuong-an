@@ -13,13 +13,21 @@ import {
 } from 'react-table'
 // A great library for fuzzy filtering/sorting items
 // import matchSorter from 'match-sorter'
-import { Input, Select, DatePicker } from 'antd';
+import { Input, Select, DatePicker, Tag } from 'antd';
 import Button from 'antd-button-color';
-import { VerticalLeftOutlined, VerticalRightOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
+import {
+  VerticalLeftOutlined,
+  VerticalRightOutlined,
+  DoubleRightOutlined,
+  DoubleLeftOutlined,
+  SortAscendingOutlined,
+  SortDescendingOutlined,
+  MinusCircleOutlined
+} from '@ant-design/icons';
 const { RangePicker } = DatePicker;
 const dateFormat = 'DD/MM/YYYY';
 import moment from 'moment';
-import { round, evaluate } from 'mathjs';
+import { round, evaluate, row } from 'mathjs';
 const Styles = styled.div`
 padding: 1rem;
 ${'' /* These styles are suggested for the table fill all available space in its containing element */}
@@ -186,7 +194,7 @@ function SelectColumnFilter({
         setFilter(e.target.value || undefined)
       }}
     >
-      <option value="">All</option>
+      <option value="">Tất cả</option>
       {options.map((option, i) => (
         <option key={i} value={option}>
           {option}
@@ -290,6 +298,33 @@ function roundCell({ value }) {
   return value ? round(value, 3) : ''
 }
 
+const labelRender = ({ value, row }) => {
+  const c = row.values;
+  let text = '';
+  let color = ''
+  var start = moment(c.ngaycam).format('X');
+  var end = moment(c.ngayhethan).format('X');
+  var now = moment().format('X');
+  const han = (end - now) / (60 * 60 * 24);
+  if (han > 0) {
+    text = 'Còn hạn',
+      color = '#c9ffb2'
+  }
+  if (han <= 0) {
+    text = 'Quá hạn',
+      color = '#ffc7b2'
+  }
+  if (c.ngaychuoc > 0) {
+    text = 'Đã chuộc',
+      color = '#a7d7ff'
+  }
+  if (c.dahuy > 0) {
+    text = 'Đã hủy',
+      color = '#ffd0d0'
+  }
+  return (<div style={{ background: color, paddingLeft: 4 }}>{text}</div>)
+}
+
 function Table({ columns, data, onRowClicked }) {
   const filterTypes = React.useMemo(
     () => ({
@@ -336,6 +371,7 @@ function Table({ columns, data, onRowClicked }) {
     // which has only the rows for the active page
 
     // The rest of these things are super handy, too ;)
+    setAllFilters,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -379,14 +415,14 @@ function Table({ columns, data, onRowClicked }) {
               className="tr thp"
             >
               {headerGroup.headers.map(column => (
-                <div {...column.getHeaderProps(column.getSortByToggleProps())} className="th">
+                <div {...column.getHeaderProps()} className="th">
                   {column.render('Header')}
-                  <span>
+                  <span {...column.getSortByToggleProps()}>{` `}
                     {column.isSorted
                       ? column.isSortedDesc
-                        ? ' 🔽'
-                        : ' 🔼'
-                      : ''}
+                        ? (<SortDescendingOutlined />)
+                        : (<SortAscendingOutlined />)
+                      : (<MinusCircleOutlined />)}
                   </span>
                   <div>{column.canFilter ? column.render('Filter') : null}</div>
                   {/* Use column.getResizerProps to hook up the events correctly */}
@@ -407,7 +443,7 @@ function Table({ columns, data, onRowClicked }) {
           {page.map((row, i) => {
             prepareRow(row)
             return (
-              <div {...row.getRowProps()} className="tr" onClick={() => onRowClicked(row.values)}>
+              <div {...row.getRowProps()} className="tr" >
                 {row.cells.map(cell => {
                   return <div {...cell.getCellProps()} className="td">{cell.render('Cell')}</div>
                 })}
@@ -438,6 +474,7 @@ function Table({ columns, data, onRowClicked }) {
         <Button size="small" type="primary" onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
           <DoubleRightOutlined />
         </Button>{' '}
+
         <span>
           Trang{' '}
           <strong>
@@ -468,6 +505,7 @@ function Table({ columns, data, onRowClicked }) {
             </option>
           ))}
         </select>
+        <Button type="info" size="small" onClick={() => setAllFilters([])}>Xóa lọc</Button>
       </div>
     </div>
   )
@@ -479,6 +517,53 @@ function filterGreaterThan(rows, id, filterValue) {
     const rowValue = row.values[id]
     return rowValue >= filterValue
   })
+}
+
+function trangThaiFilter(props) {
+  const {
+    column: { filterValue = 'all', preFilteredRows, setFilter, id },
+  } = props;
+  // attach the onChange method from props's object to element
+  const count = preFilteredRows.length;
+  return (
+    <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
+      <option key="all">Tất cả</option>
+      <option key="conhan">Còn hạn</option>
+      <option key="hethan">Hết hạn</option>
+      <option key="dachuoc">Đã chuộc</option>
+    </select>
+  )
+}
+
+function filterTrangThai(rows, id, filterValue) {
+  console.log(filterValue);
+  if (filterValue === 'all') return rows;
+  if (filterValue === 'Đã chuộc') {
+    return rows.filter(row => {
+      console.log(row.values['ngaychuoc']);
+      const rowValue = row.values[id]
+      return row.values['ngaychuoc'] > 0
+    })
+  } else if (filterValue === 'Còn hạn') {
+    return rows.filter(row => {
+      var end = moment(row.values['ngayhethan']).format('X');
+      var now = moment().format('X');
+      if (now < end) {
+        return row;
+      }
+    })
+  } else if (filterValue === 'Hết hạn') {
+    return rows.filter(row => {
+      var end = moment(row.values['ngayhethan']).format('X');
+      var now = moment().format('X');
+      if (now > end) {
+        return row;
+      }
+    })
+  }
+  else {
+    return []
+  }
 }
 
 
@@ -500,8 +585,7 @@ function filterDateRange(rows, id, filterValue) {
   if (filterValue === null) return rows
   try {
     const start = filterValue[0].startOf('Day').format('x');
-    const end = filterValue[1].endOf('Day').format('x')
-    console.log('set: ', start, end);
+    const end = filterValue[1].endOf('Day').format('x');
     return rows.filter(row => {
       const rowValue = row.values[id];
       if (rowValue >= start && rowValue <= end) {
@@ -563,7 +647,7 @@ function filterTrongLuong(rows, id, filterValue) {
     const num2 = `${filterValue}`.match(/[\d]{1,99}([.]\d{1,99})?/g)[1]
     return rows.filter(row => {
       const rowValue = row.values[id]
-      if (rowValue > num1 && rowValue < num2) {
+      if (rowValue >= num1 && rowValue <= num2) {
         return row
       }
     })
@@ -587,6 +671,9 @@ function filterTrongLuong(rows, id, filterValue) {
 filterGreaterThan.autoRemove = val => typeof val !== 'number'
 
 function BangThongKe(props) {
+
+  const { data, onSelectRow } = props
+
   const columns = React.useMemo(
     () => [
       {
@@ -598,6 +685,9 @@ function BangThongKe(props) {
         Header: 'Số phiếu',
         accessor: 'sophieu',
         Footer: info => info.rows.length,
+        Cell: ({value, row}) => {
+          return <a onClick={() => onSelectRow(row.values)}>{value}</a>
+        },
         width: 80
       },
       {
@@ -705,7 +795,6 @@ function BangThongKe(props) {
         width: 100,
         Footer: info => {
           // Only calculate total visits if rows change
-          console.log(info);
           const total = React.useMemo(
             () =>
               info.rows.reduce((sum, row) => row.values.tienchuoc ? Number(row.values.tienchuoc | 0) + sum : sum, 0),
@@ -731,13 +820,14 @@ function BangThongKe(props) {
       {
         Header: 'Trạng thái',
         accessor: 'trangthai',
-        width: 100
+        Cell: labelRender,
+        Filter: trangThaiFilter,
+        filter: filterTrangThai,
+        width: 100,
       },
     ],
     []
   )
-
-  const { data, onSelectRow } = props
 
   return (
     <Styles>

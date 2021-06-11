@@ -414,4 +414,44 @@ tbody tr:hover {
   .dateFilter {
     overflow-y: hidden;
     /* font-size: 5pt; */
+    border: 0;
+  }
+  .dateFilter .ant-picker-suffix {
+    display: none;
+  }
+  .trangthaiTag {
+    padding: 1 !important;
+  }
+
+  .selectFilter {
+    position: relative !important;
+    top: 5px;
+    width: 85px !important;
+  }
+  .ant-select-selector {
+    position: relative !important;
+    top: 0;
+  }
+
+  select {
+    display: inline-block;
+    width: -webkit-fill-available;
+    margin-top: 5px !important;
+    box-sizing: border-box;
+    padding: 0.1em 0.2em 0.1em 0.2em;
+    border: 1px solid #eee;
+    font: inherit;
+    font-size: 9pt !important;
+    line-height: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    background-repeat: no-repeat;
+    /* background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%); */
+    background-position: right 15px top 1em, right 10px top 1em;
+    background-size: 5px 5px, 5px 5px;
+  }
+  .ant-input-affix-wrapper {
+    border: 0 !important;
   }

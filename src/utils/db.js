@@ -145,7 +145,7 @@ export function timPhieubyID(id, fn) {
     .where('id', id)
     .then(res => {
       console.log(res);
-      fn(res)
+      fn(res[0])
     });
 }
 export function timKiem(text, fn) {
@@ -166,6 +166,10 @@ export function createSettings() {
   db.initdb.dropTable('settings')
     .then(e => db.initdb.createSettings())
     .then(e => db.initdb.createSettingsDetails())
+    .catch(e => {
+      db.initdb.createSettings()
+      .then(e => db.initdb.createSettingsDetails())
+    })
 }
 export function getSettings() {
   const a = new Promise((res, rej) => {

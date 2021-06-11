@@ -5,7 +5,7 @@ const { RangePicker } = DatePicker;
 import moment from 'moment';
 import BarcodeReader from 'react-barcode-reader';
 import { getSettings } from '../utils/db';
-import { round } from 'mathjs';
+import { round, evaluate } from 'mathjs';
 
 import { SmileOutlined, CloseCircleOutlined, CheckCircleOutlined, SaveOutlined, PrinterOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
@@ -44,12 +44,13 @@ function ChiTiet(props) {
   const calc = () => {
     const ngayCamChuoc = form.getFieldValue('ngayCamChuoc');
     const gianhap = form.getFieldValue('gianhap');
-    const tongtrongluong = Number(form.getFieldValue('tongtrongluong'));
-    const trongluonghot = Number(form.getFieldValue('trongluonghot'));
-    const trongluongthuc = tongtrongluong - trongluonghot;
-    const tiencam = form.getFieldValue('tiencam') ? form.getFieldValue('tiencam') : Math.round(trongluongthuc * gianhap);
+    const tongtrongluong = form.getFieldValue('tongtrongluong');
+    const trongluonghot = form.getFieldValue('trongluonghot');
+    const trongluongthuc = round(evaluate(`${tongtrongluong} - ${trongluonghot}`), 3);
+    console.log(trongluongthuc);
+    // const tiencam = form.getFieldValue('tiencam') ? form.getFieldValue('tiencam') : round(trongluongthuc * gianhap);
     let laisuat = Number(form.getFieldValue('laisuat'));
-    const songay = ngayCamChuoc ? Math.round((moment().format('x') - moment(data.ngaytinhlai ? data.ngaytinhlai : data.ngaycam).format('x')) / (1000 * 60 * 60 * 24) + 1) : '';
+    const songay = ngayCamChuoc ? round((moment().format('x') - moment(data.ngaytinhlai ? data.ngaytinhlai : data.ngaycam).format('x')) / (1000 * 60 * 60 * 24) + 1) : '';
     if (songay < 10) {
       laisuat = dataLaiSuat.lai10
     } else if (songay > 10 && songay < 20) {
@@ -61,9 +62,9 @@ function ChiTiet(props) {
     console.log(tienlaidukien);
     const tienchuocdukien = Number(data.tienchuoc) > 0 ? Number(data.tienchuoc) : Math.round(tiencam + tienlaidukien);
     form.setFieldsValue({
-      trongluongthuc: trongluongthuc | '',
-      tiencam: tiencam | '',
-      tienlaidukien: tienlaidukien | '',
+      trongluongthuc: trongluongthuc,
+      // tiencam: tiencam | '',
+      // tienlaidukien: tienlaidukien | '',
       songay: songay | '',
       tienchuocdukien: tienchuocdukien | '',
       laisuat: laisuat | ''
@@ -78,15 +79,11 @@ function ChiTiet(props) {
     return { ...res, ...{ ngayCamChuoc: ngayCamChuoc, ngaychuoc: ngaychuoc } };
   }
   useEffect(() => {
-    console.log(data);
+    console.log('data', data);
     getSettings()
       .then(res => {
         console.log('settings', res);
         setDataLaiSuat(res);
-        console.log(data);
-        inputRef.current.focus({
-          preventScroll: true,
-        });
         const ngayCamChuoc = data.ngaycam ? [
           moment(moment(data.ngaycam).format(dateFormat),
             dateFormat), moment(moment(data.ngayhethan).format(dateFormat), dateFormat)
@@ -94,10 +91,11 @@ function ChiTiet(props) {
         const ngaychuoc = data.ngaychuoc ? moment(moment(data.ngaychuoc).format(dateFormat), dateFormat) : '';
         const ngaytinhlai = data.ngaytinhlai ? moment(moment(data.ngaytinhlai).format(dateFormat), dateFormat) : '';
         setFormData(data);
-        const tmp = {};
-        ngaychuoc ? tmp.ngaychuoc = ngaychuoc : '';
-        ngaytinhlai ? tmp.ngaytinhlai = ngaytinhlai : '';
-        form.setFieldsValue({ ...data, ...{ ngayCamChuoc: ngayCamChuoc }, ...tmp });
+        if (data.ngaychuoc) {
+          form.setFieldsValue({ ...data, ...{ ngayCamChuoc: ngayCamChuoc, ngaychuoc: ngaychuoc, ngaytinhlai: ngaytinhlai } });
+        } else {
+          form.setFieldsValue({ ...data, ...{ ngayCamChuoc: ngayCamChuoc, ngaytinhlai: ngaytinhlai } });
+        }
         calc();
       });
     return () => {
@@ -106,7 +104,7 @@ function ChiTiet(props) {
   }, [data]);
   const _onValuesChange = (value, vs) => {
     setFormData(vs);
-    // calc();
+    calc();
     console.log(value);
   };
   const onGiaUpdate = (data) => {
@@ -164,7 +162,7 @@ function ChiTiet(props) {
     console.log('ngaychuoc', ngaychuoc);
     chuocDo(data.id, tienlaidukien + tienlai, tienchuoc, ngaychuoc, () => {
       timPhieubyID(form.getFieldValue('id'), res => {
-        onSearched(dateParser(res[0]));
+        onSearched(dateParser(res));
       })
       setModalChuoc(false)
     });
@@ -187,7 +185,7 @@ function ChiTiet(props) {
     const laidukien = form.getFieldValue('tienlaidukien');
     giahanCamDo(data.id, laihientai + laidukien, 30, () => {
       timPhieubyID(data.id, res => {
-        const data = dateParser(res[0])
+        const data = dateParser(res)
         onSearched(data);
       })
     })
@@ -204,7 +202,7 @@ function ChiTiet(props) {
     console.log(tiencamthem);
     camThemTien(data.id, laihientai + laidukien, tiencam + tiencamthem, () => {
       timPhieubyID(data.id, res => {
-        const data = dateParser(res[0])
+        const data = dateParser(res)
         onSearched(data);
       })
     })
@@ -266,14 +264,14 @@ function ChiTiet(props) {
       }
       else {
         console.log(data);
-        const data = dateParser(res[0])
+        const data = dateParser(res)
         onSearched(data);
       }
     });
   }
   const print = () => {
     timPhieubyID(form.getFieldValue('id'), res => {
-      printPreview(dateParser(res[0]), false)
+      printPreview(dateParser(res), false)
     })
   }
   const onKeyPress = (e) => {
@@ -444,7 +442,7 @@ function ChiTiet(props) {
             disabled={quetphieu}
           />
         </Form.Item>
-        <Form.Item label="Ngày tính lãi" name="ngaytinhlai">
+        <Form.Item label="Ngày tính lãi" name="ngaychuoc">
           <DatePicker format={dateFormat1} disabled={formData.dachuoc ? true : false} />
         </Form.Item>
         <Form.Item hidden name="gia18K">
@@ -475,7 +473,7 @@ function ChiTiet(props) {
           <Input disabled={quetphieu} />
         </Form.Item>
         <Form.Item label="Ngày chuộc" name="ngaychuoc">
-          <DatePicker format={dateFormat1} disabled={formData.dachuoc ? true : false} /> ({data.ngaychuoc ? moment(data.ngaychuoc).format('hh:mm a') : ''})
+          <DatePicker format={'DD/MM/YYYY HH:mm'} disabled={formData.dachuoc ? true : false} />
         </Form.Item>
         <Form.Item className="chitiet-btn" label="" {...tailLayout} >
           <Button type="danger" disabled={data.dachuoc ? true : false} hidden={quetphieu} onClick={huyphieu} ><CloseCircleOutlined /> Hủy phiếu </Button>
