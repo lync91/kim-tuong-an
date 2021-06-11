@@ -1,9 +1,21 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useFlexLayout, useRowSelect, useResizeColumns, usePagination } from 'react-table'
+import {
+  useTable,
+  useFilters,
+  useGlobalFilter,
+  useAsyncDebounce,
+  useFlexLayout,
+  useRowSelect,
+  useResizeColumns,
+  usePagination,
+  useSortBy
+} from 'react-table'
 // A great library for fuzzy filtering/sorting items
 // import matchSorter from 'match-sorter'
-import { Input, Button, Select, DatePicker } from 'antd';
+import { Input, Select, DatePicker } from 'antd';
+import Button from 'antd-button-color';
+import { VerticalLeftOutlined, VerticalRightOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 const { RangePicker } = DatePicker;
 const dateFormat = 'DD/MM/YYYY';
 import moment from 'moment';
@@ -345,9 +357,11 @@ function Table({ columns, data, onRowClicked }) {
     useFilters, // useFilters!
     useGlobalFilter, // useGlobalFilter!
     useFlexLayout,
+    useSortBy,
     usePagination,
     useRowSelect,
     useResizeColumns,
+
   )
 
   // We don't want to render all of the rows for this example, so cap
@@ -365,8 +379,15 @@ function Table({ columns, data, onRowClicked }) {
               className="tr thp"
             >
               {headerGroup.headers.map(column => (
-                <div {...column.getHeaderProps(headerProps)} className="th">
+                <div {...column.getHeaderProps(column.getSortByToggleProps())} className="th">
                   {column.render('Header')}
+                  <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? ' 🔽'
+                        : ' 🔼'
+                      : ''}
+                  </span>
                   <div>{column.canFilter ? column.render('Filter') : null}</div>
                   {/* Use column.getResizerProps to hook up the events correctly */}
                   {/* {column.canResize && (
@@ -405,17 +426,17 @@ function Table({ columns, data, onRowClicked }) {
         </div>
       </div>
       <div className="pagination">
-        <Button size="small" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {'<<'}
+        <Button size="small" type="primary" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          <DoubleLeftOutlined />
         </Button>{' '}
-        <Button size="small" onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {'<'}
+        <Button size="small" type="primary" onClick={() => previousPage()} disabled={!canPreviousPage}>
+          <VerticalRightOutlined />
         </Button>{' '}
-        <Button size="small" onClick={() => nextPage()} disabled={!canNextPage}>
-          {'>'}
+        <Button size="small" type="primary" onClick={() => nextPage()} disabled={!canNextPage}>
+          <VerticalLeftOutlined />
         </Button>{' '}
-        <Button size="small" onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {'>>'}
+        <Button size="small" type="primary" onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+          <DoubleRightOutlined />
         </Button>{' '}
         <span>
           Trang{' '}
@@ -460,6 +481,7 @@ function filterGreaterThan(rows, id, filterValue) {
   })
 }
 
+
 function dateRangFilter(props) {
   const {
     column: { filterValue = [], preFilteredRows, setFilter, id },
@@ -467,10 +489,28 @@ function dateRangFilter(props) {
   // attach the onChange method from props's object to element
   const count = preFilteredRows.length;
   return (
-    <RangePicker size="small" className="dateFilter"
+    <RangePicker size="small" className="dateFilter" onChange={(e) => setFilter(e)}
       format={dateFormat}
     />
   )
+}
+
+
+function filterDateRange(rows, id, filterValue) {
+  if (filterValue === null) return rows
+  try {
+    const start = filterValue[0].startOf('Day').format('x');
+    const end = filterValue[1].endOf('Day').format('x')
+    console.log('set: ', start, end);
+    return rows.filter(row => {
+      const rowValue = row.values[id];
+      if (rowValue >= start && rowValue <= end) {
+        return row
+      }
+    })
+  } catch (error) {
+    return []
+  }
 }
 
 function trongLuonFilter(props) {
@@ -491,7 +531,6 @@ function trongLuonFilter(props) {
     />
   )
 }
-
 
 function filterTrongLuong(rows, id, filterValue) {
   const mtxt = /\<[\d]{1,99}([.]\d{1,99})?/g.test(filterValue);
@@ -558,6 +597,7 @@ function BangThongKe(props) {
       {
         Header: 'Số phiếu',
         accessor: 'sophieu',
+        Footer: info => info.rows.length,
         width: 80
       },
       {
@@ -603,11 +643,14 @@ function BangThongKe(props) {
         accessor: 'ngaycam',
         Cell: dateHourCell,
         Filter: dateRangFilter,
+        filter: filterDateRange,
         width: 110
       },
       {
         Header: 'Ngày tính lãi',
         accessor: 'ngaytinhlai',
+        Filter: dateRangFilter,
+        filter: filterDateRange,
         Cell: dateCell,
         width: 90
       },
@@ -631,6 +674,7 @@ function BangThongKe(props) {
 
           return <>{`${total}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</>
         },
+        filter: 'equals',
         width: 100
       },
       {
@@ -675,6 +719,8 @@ function BangThongKe(props) {
         Header: 'Ngày chuộc',
         accessor: 'ngaychuoc',
         Cell: dateHourCell,
+        Filter: dateRangFilter,
+        filter: filterDateRange,
         width: 125
       },
       {

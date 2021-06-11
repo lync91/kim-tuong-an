@@ -30,6 +30,9 @@
   ],
   "main": "main.js",
   "build": {
+    "win": {
+      "icon": "./src/assets/icon.ico"
+    },
     "extraResources": [
       {
         "from": "./data/",
@@ -53,7 +56,6 @@
     "antd": "^4.15.4",
     "antd-button-color": "^1.0.4",
     "bwip-js": "^3.0.0",
-    "custom-electron-titlebar": "^3.2.7",
     "electron-pdf-window": "^1.0.12",
     "electron-print": "^1.0.2",
     "electron-settings": "^4.0.2",
